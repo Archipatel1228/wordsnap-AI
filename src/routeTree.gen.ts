@@ -9,38 +9,255 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VocabularyRouteImport } from './routes/vocabulary'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as HomeRouteImport } from './routes/home'
+import { Route as HistoryRouteImport } from './routes/history'
+import { Route as DailyRouteImport } from './routes/daily'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WordIdRouteImport } from './routes/word.$id'
 
+const VocabularyRoute = VocabularyRouteImport.update({
+  id: '/vocabulary',
+  path: '/vocabulary',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeRoute = HomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DailyRoute = DailyRouteImport.update({
+  id: '/daily',
+  path: '/daily',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WordIdRoute = WordIdRouteImport.update({
+  id: '/word/$id',
+  path: '/word/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/daily': typeof DailyRoute
+  '/history': typeof HistoryRoute
+  '/home': typeof HomeRoute
+  '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
+  '/profile': typeof ProfileRoute
+  '/register': typeof RegisterRoute
+  '/search': typeof SearchRoute
+  '/settings': typeof SettingsRoute
+  '/vocabulary': typeof VocabularyRoute
+  '/word/$id': typeof WordIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/daily': typeof DailyRoute
+  '/history': typeof HistoryRoute
+  '/home': typeof HomeRoute
+  '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
+  '/profile': typeof ProfileRoute
+  '/register': typeof RegisterRoute
+  '/search': typeof SearchRoute
+  '/settings': typeof SettingsRoute
+  '/vocabulary': typeof VocabularyRoute
+  '/word/$id': typeof WordIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/daily': typeof DailyRoute
+  '/history': typeof HistoryRoute
+  '/home': typeof HomeRoute
+  '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
+  '/profile': typeof ProfileRoute
+  '/register': typeof RegisterRoute
+  '/search': typeof SearchRoute
+  '/settings': typeof SettingsRoute
+  '/vocabulary': typeof VocabularyRoute
+  '/word/$id': typeof WordIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/daily'
+    | '/history'
+    | '/home'
+    | '/login'
+    | '/onboarding'
+    | '/profile'
+    | '/register'
+    | '/search'
+    | '/settings'
+    | '/vocabulary'
+    | '/word/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/daily'
+    | '/history'
+    | '/home'
+    | '/login'
+    | '/onboarding'
+    | '/profile'
+    | '/register'
+    | '/search'
+    | '/settings'
+    | '/vocabulary'
+    | '/word/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/daily'
+    | '/history'
+    | '/home'
+    | '/login'
+    | '/onboarding'
+    | '/profile'
+    | '/register'
+    | '/search'
+    | '/settings'
+    | '/vocabulary'
+    | '/word/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DailyRoute: typeof DailyRoute
+  HistoryRoute: typeof HistoryRoute
+  HomeRoute: typeof HomeRoute
+  LoginRoute: typeof LoginRoute
+  OnboardingRoute: typeof OnboardingRoute
+  ProfileRoute: typeof ProfileRoute
+  RegisterRoute: typeof RegisterRoute
+  SearchRoute: typeof SearchRoute
+  SettingsRoute: typeof SettingsRoute
+  VocabularyRoute: typeof VocabularyRoute
+  WordIdRoute: typeof WordIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vocabulary': {
+      id: '/vocabulary'
+      path: '/vocabulary'
+      fullPath: '/vocabulary'
+      preLoaderRoute: typeof VocabularyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/daily': {
+      id: '/daily'
+      path: '/daily'
+      fullPath: '/daily'
+      preLoaderRoute: typeof DailyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +265,29 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/word/$id': {
+      id: '/word/$id'
+      path: '/word/$id'
+      fullPath: '/word/$id'
+      preLoaderRoute: typeof WordIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DailyRoute: DailyRoute,
+  HistoryRoute: HistoryRoute,
+  HomeRoute: HomeRoute,
+  LoginRoute: LoginRoute,
+  OnboardingRoute: OnboardingRoute,
+  ProfileRoute: ProfileRoute,
+  RegisterRoute: RegisterRoute,
+  SearchRoute: SearchRoute,
+  SettingsRoute: SettingsRoute,
+  VocabularyRoute: VocabularyRoute,
+  WordIdRoute: WordIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

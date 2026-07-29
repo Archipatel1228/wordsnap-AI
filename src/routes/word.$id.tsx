@@ -100,7 +100,7 @@ function WordPage() {
 
       <Section title="Examples">
         <div className="space-y-2">
-          {word.examples.map((ex, i) => (
+          {word.examples.map((ex: string, i: number) => (
             <p key={i} className="rounded-2xl bg-white/5 px-4 py-3 text-sm italic text-white/75">
               "{ex}"
             </p>
