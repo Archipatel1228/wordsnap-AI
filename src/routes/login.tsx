@@ -15,8 +15,17 @@ export const Route = createFileRoute("/login")({
 
 function Login() {
   const nav = useNavigate();
-  const go = (e: React.FormEvent) => {
+  const { auth } = useAuth();
+  const [email, setEmail] = useState("alex@wordsnap.ai");
+  const [password, setPassword] = useState("password");
+
+  const go = async (e: React.FormEvent) => {
     e.preventDefault();
+    await auth.signInWithPassword(email, password);
+    nav({ to: "/home" });
+  };
+  const social = async (fn: () => Promise<unknown>) => {
+    await fn();
     nav({ to: "/home" });
   };
   return (
