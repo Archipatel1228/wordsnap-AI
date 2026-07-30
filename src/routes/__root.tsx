@@ -12,6 +12,10 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
+import { OfflineBanner } from "@/components/OfflineBanner";
+import { InstallPrompt } from "@/components/InstallPrompt";
+import { ServicesProvider } from "@/lib/services";
+import { registerServiceWorker } from "@/lib/register-sw";
 
 function NotFoundComponent() {
   return (
@@ -126,10 +130,18 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => {
+    void registerServiceWorker();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
-      <Toaster position="top-center" theme="dark" richColors />
+      <ServicesProvider>
+        <OfflineBanner />
+        <Outlet />
+        <InstallPrompt />
+        <Toaster position="top-center" theme="dark" richColors />
+      </ServicesProvider>
     </QueryClientProvider>
   );
 }

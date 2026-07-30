@@ -1,5 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Mail, Lock, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { useAuth } from "@/lib/services";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -15,8 +17,17 @@ export const Route = createFileRoute("/login")({
 
 function Login() {
   const nav = useNavigate();
-  const go = (e: React.FormEvent) => {
+  const { auth } = useAuth();
+  const [email, setEmail] = useState("alex@wordsnap.ai");
+  const [password, setPassword] = useState("password");
+
+  const go = async (e: React.FormEvent) => {
     e.preventDefault();
+    await auth.signInWithPassword(email, password);
+    nav({ to: "/home" });
+  };
+  const social = async (fn: () => Promise<unknown>) => {
+    await fn();
     nav({ to: "/home" });
   };
   return (
@@ -41,7 +52,8 @@ function Login() {
           <Input
             type="email"
             placeholder="Email address"
-            defaultValue="alex@wordsnap.ai"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="h-14 rounded-2xl border-white/10 bg-white/5 pl-11 text-base placeholder:text-white/40"
           />
         </div>
@@ -50,7 +62,8 @@ function Login() {
           <Input
             type="password"
             placeholder="Password"
-            defaultValue="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="h-14 rounded-2xl border-white/10 bg-white/5 pl-11 text-base placeholder:text-white/40"
           />
         </div>
@@ -75,14 +88,14 @@ function Login() {
 
       <div className="space-y-3">
         <Button
-          onClick={() => nav({ to: "/home" })}
+          onClick={() => social(() => auth.signInWithGoogle())}
           variant="outline"
           className="h-14 w-full rounded-2xl border-white/10 bg-white/5 text-base hover:bg-white/10"
         >
           <GoogleIcon /> Continue with Google
         </Button>
         <Button
-          onClick={() => nav({ to: "/home" })}
+          onClick={() => social(() => auth.signInAsGuest())}
           variant="ghost"
           className="h-14 w-full rounded-2xl text-base text-white/70 hover:bg-white/5"
         >
