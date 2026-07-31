@@ -14,7 +14,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { OfflineBanner } from "@/components/OfflineBanner";
 import { InstallPrompt } from "@/components/InstallPrompt";
-import { ServicesProvider } from "@/lib/services";
+import { ServicesProvider, usePreferences } from "@/lib/services";
 import { registerServiceWorker } from "@/lib/register-sw";
 
 function NotFoundComponent() {
@@ -104,7 +104,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "manifest", href: "/manifest.webmanifest" },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", type: "image/png", href: "/favicon.png" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
     ],
   }),
   shellComponent: RootShell,
@@ -127,6 +128,16 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function AccessibilityEffects() {
+  const { preferences } = usePreferences();
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle("reduce-motion", Boolean(preferences?.reduceMotion));
+    root.classList.toggle("dyslexia-friendly", Boolean(preferences?.dyslexiaFont));
+  }, [preferences?.reduceMotion, preferences?.dyslexiaFont]);
+  return null;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
@@ -137,6 +148,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <ServicesProvider>
+        <AccessibilityEffects />
         <OfflineBanner />
         <Outlet />
         <InstallPrompt />
