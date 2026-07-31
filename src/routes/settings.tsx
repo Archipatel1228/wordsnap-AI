@@ -1,38 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AppShell } from "@/components/AppShell";
-import {
-  Moon,
-  Bell,
-  Languages,
-  Type,
-  Shield,
-  Info,
-  ChevronRight,
-  ArrowLeft,
-  Download,
-  BellRing,
-  Flame,
-  Clock,
-} from "lucide-react";
-import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { ArrowLeft, Bell, Download, Eye, Languages, Type, Zap } from "lucide-react";
 import { toast } from "sonner";
-import { useNotificationPermission } from "@/hooks/useNotificationPermission";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { usePwaInstall } from "@/hooks/usePwaInstall";
-import { useData } from "@/lib/services";
-import type { NotificationPrefs } from "@/lib/services/types";
+import { useNotifications } from "@/hooks/useNotifications";
+import { usePreferences } from "@/lib/services";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
       { title: "Settings — WordSnap AI" },
-      { name: "description", content: "Customize your WordSnap AI experience." },
+      { name: "description", content: "Accessibility, notifications and install settings." },
       { property: "og:title", content: "Settings — WordSnap AI" },
-      {
-        property: "og:description",
-        content: "Notifications, appearance and install options for WordSnap AI.",
-      },
+      { property: "og:description", content: "Tune WordSnap AI to the way you learn." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -40,232 +21,155 @@ export const Route = createFileRoute("/settings")({
   component: SettingsPage,
 });
 
-function SettingsPage() {
-  const [dark, setDark] = useState(true);
-  const [fontSize, setFontSize] = useState<"S" | "M" | "L">("M");
-
-  const data = useData();
-  const { permission, request, supported } = useNotificationPermission();
-  const { canInstall, installed, platform, promptInstall } = usePwaInstall();
-  const [prefs, setPrefs] = useState<NotificationPrefs>({
-    dailyWord: true,
-    streakReminder: false,
-    hour: 9,
-  });
-
-  useEffect(() => {
-    data.getNotificationPrefs().then(setPrefs);
-  }, [data]);
-
-  const update = async (patch: Partial<NotificationPrefs>) => {
-    const next = { ...prefs, ...patch };
-    if ((patch.dailyWord || patch.streakReminder) && permission !== "granted") {
-      const result = await request();
-      if (result !== "granted") {
-        toast.error(
-          result === "denied"
-            ? "Notifications are blocked in your browser settings."
-            : "Notifications aren't supported on this device.",
-        );
-        return;
-      }
-      toast.success("Notifications enabled — Daily Word alerts are ready.");
-    }
-    setPrefs(next);
-    await data.setNotificationPrefs(next);
-  };
-
-  const install = async () => {
-    const outcome = await promptInstall();
-    if (outcome === "accepted") toast.success("Adding WordSnap to your home screen");
-    else if (outcome === "unsupported")
-      toast.info(
-        platform === "ios"
-          ? "In Safari: Share → Add to Home Screen"
-          : "Open the browser menu → Install app",
-      );
-  };
-
-  return (
-    <AppShell>
-      <div className="px-5 pt-8 pb-4">
-        <Link
-          to="/profile"
-          className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5"
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Link>
-        <h1 className="text-2xl font-black tracking-tight">Settings</h1>
-      </div>
-
-      <div className="space-y-6 px-5">
-        <Group title="Notifications">
-          <div className="flex items-center justify-between px-5 py-4">
-            <div className="flex min-w-0 items-center gap-3">
-              <span className="text-white/70">
-                <BellRing className="h-5 w-5" />
-              </span>
-              <div className="min-w-0">
-                <p className="text-sm font-medium">Permission</p>
-                <p className="text-xs text-white/50">
-                  {!supported
-                    ? "Not supported on this device"
-                    : permission === "granted"
-                      ? "Allowed"
-                      : permission === "denied"
-                        ? "Blocked in browser settings"
-                        : "Not requested yet"}
-                </p>
-              </div>
-            </div>
-            {supported && permission !== "granted" && (
-              <Button
-                size="sm"
-                onClick={async () => {
-                  const r = await request();
-                  if (r === "granted") toast.success("Notifications enabled");
-                  else if (r === "denied") toast.error("Permission blocked");
-                }}
-                className="h-9 shrink-0 rounded-xl gradient-primary text-xs font-semibold"
-              >
-                Enable
-              </Button>
-            )}
-          </div>
-
-          <Row icon={<Bell className="h-5 w-5" />} label="Daily Word alert">
-            <Switch
-              checked={prefs.dailyWord && permission === "granted"}
-              onCheckedChange={(v) => update({ dailyWord: v })}
-            />
-          </Row>
-          <Row icon={<Flame className="h-5 w-5" />} label="Streak reminder">
-            <Switch
-              checked={prefs.streakReminder && permission === "granted"}
-              onCheckedChange={(v) => update({ streakReminder: v })}
-            />
-          </Row>
-          <Row icon={<Clock className="h-5 w-5" />} label="Delivery time">
-            <select
-              value={prefs.hour}
-              onChange={(e) => update({ hour: Number(e.target.value) })}
-              className="rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-sm outline-none"
-            >
-              {[7, 8, 9, 12, 18, 20, 21].map((h) => (
-                <option key={h} value={h} className="bg-[#0F172A]">
-                  {String(h).padStart(2, "0")}:00
-                </option>
-              ))}
-            </select>
-          </Row>
-          <p className="px-5 pb-4 pt-1 text-[11px] leading-relaxed text-white/40">
-            Preferences are stored now and will drive push delivery as soon as a push service is
-            connected.
-          </p>
-        </Group>
-
-        <Group title="App">
-          <div className="flex items-center justify-between px-5 py-4">
-            <div className="flex items-center gap-3">
-              <span className="text-white/70">
-                <Download className="h-5 w-5" />
-              </span>
-              <div>
-                <p className="text-sm font-medium">Add to Home Screen</p>
-                <p className="text-xs text-white/50">
-                  {installed ? "Installed" : canInstall ? "Ready to install" : "Manual steps"}
-                </p>
-              </div>
-            </div>
-            {!installed && (
-              <Button
-                size="sm"
-                onClick={install}
-                className="h-9 rounded-xl gradient-primary text-xs font-semibold"
-              >
-                Install
-              </Button>
-            )}
-          </div>
-        </Group>
-
-        <Group title="Appearance">
-          <Row icon={<Moon className="h-5 w-5" />} label="Dark mode">
-            <Switch checked={dark} onCheckedChange={setDark} />
-          </Row>
-          <Row icon={<Type className="h-5 w-5" />} label="Font size">
-            <div className="flex gap-1 rounded-full bg-white/10 p-1">
-              {(["S", "M", "L"] as const).map((s) => (
-                <button
-                  key={s}
-                  onClick={() => setFontSize(s)}
-                  className={`h-7 w-8 rounded-full text-xs font-bold ${
-                    fontSize === s ? "gradient-primary text-white" : "text-white/60"
-                  }`}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-          </Row>
-        </Group>
-
-        <Group title="Preferences">
-          <Row icon={<Languages className="h-5 w-5" />} label="Language">
-            <span className="text-sm text-white/60">English</span>
-          </Row>
-        </Group>
-
-        <Group title="Account">
-          <LinkRow icon={<Shield className="h-5 w-5" />} label="Privacy & Security" />
-          <LinkRow icon={<Info className="h-5 w-5" />} label="About WordSnap AI" />
-        </Group>
-
-        <p className="pt-2 text-center text-xs text-white/40">WordSnap AI · v1.0.0</p>
-      </div>
-    </AppShell>
-  );
-}
-
-function Group({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <h3 className="mb-2 px-1 text-xs font-bold uppercase tracking-widest text-white/50">
-        {title}
-      </h3>
-      <div className="card-premium divide-y divide-white/5 rounded-3xl">{children}</div>
-    </div>
-  );
-}
-
 function Row({
   icon,
-  label,
+  title,
+  description,
   children,
 }: {
   icon: React.ReactNode;
-  label: string;
+  title: string;
+  description?: string;
   children?: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between px-5 py-4">
-      <div className="flex items-center gap-3">
-        <span className="text-white/70">{icon}</span>
-        <span className="text-sm font-medium">{label}</span>
+    <div className="glass flex items-center gap-3 rounded-2xl px-4 py-3.5">
+      <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/8">{icon}</div>
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-semibold">{title}</p>
+        {description && <p className="mt-0.5 text-xs text-white/50">{description}</p>}
       </div>
       {children}
     </div>
   );
 }
 
-function LinkRow({ icon, label }: { icon: React.ReactNode; label: string }) {
+function SettingsPage() {
+  const { preferences, update } = usePreferences();
+  const { permission, sendTest } = useNotifications();
+  const { canInstall, installed, platform, promptInstall } = usePwaInstall();
+
+  const prefs = preferences;
+
   return (
-    <button className="flex w-full items-center justify-between px-5 py-4 text-left hover:bg-white/5">
+    <div className="mx-auto min-h-dvh w-full max-w-[520px] px-5 pb-20 pt-8">
       <div className="flex items-center gap-3">
-        <span className="text-white/70">{icon}</span>
-        <span className="text-sm font-medium">{label}</span>
+        <Link
+          to="/profile"
+          aria-label="Back to profile"
+          className="grid h-11 w-11 place-items-center rounded-2xl border border-white/10 bg-white/5"
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Link>
+        <h1 className="text-xl font-black">Settings</h1>
       </div>
-      <ChevronRight className="h-4 w-4 text-white/40" />
-    </button>
+
+      <h2 className="mb-3 mt-7 text-xs font-bold uppercase tracking-widest text-white/50">
+        Accessibility
+      </h2>
+      <div className="space-y-2">
+        <Row icon={<Zap className="h-4 w-4" />} title="Reduce motion" description="Minimise animations and transitions.">
+          <Switch
+            checked={prefs?.reduceMotion ?? false}
+            onCheckedChange={(value) => update({ reduceMotion: value })}
+            aria-label="Reduce motion"
+          />
+        </Row>
+        <Row
+          icon={<Type className="h-4 w-4" />}
+          title="Dyslexia-friendly text"
+          description="Wider spacing and heavier letterforms."
+        >
+          <Switch
+            checked={prefs?.dyslexiaFont ?? false}
+            onCheckedChange={(value) => update({ dyslexiaFont: value })}
+            aria-label="Dyslexia-friendly text"
+          />
+        </Row>
+        <Row
+          icon={<Languages className="h-4 w-4" />}
+          title="Preferred translation"
+          description="Highlighted first in AI explanations."
+        >
+          <select
+            aria-label="Preferred translation language"
+            value={prefs?.translationLanguage ?? "hindi"}
+            onChange={(e) =>
+              update({ translationLanguage: e.target.value as "hindi" | "gujarati" })
+            }
+            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs"
+          >
+            <option value="hindi">Hindi</option>
+            <option value="gujarati">Gujarati</option>
+          </select>
+        </Row>
+      </div>
+
+      <h2 className="mb-3 mt-7 text-xs font-bold uppercase tracking-widest text-white/50">
+        Notifications
+      </h2>
+      <div className="space-y-2">
+        <Row icon={<Bell className="h-4 w-4" />} title="Daily Word alert" description={`Permission: ${permission}`}>
+          <Switch
+            checked={prefs?.dailyWord ?? false}
+            onCheckedChange={(value) => update({ dailyWord: value })}
+            aria-label="Daily word alert"
+          />
+        </Row>
+        <Row icon={<Bell className="h-4 w-4" />} title="Streak reminder" description="A nudge if you haven't learned today.">
+          <Switch
+            checked={prefs?.streakReminder ?? false}
+            onCheckedChange={(value) => update({ streakReminder: value })}
+            aria-label="Streak reminder"
+          />
+        </Row>
+        <Button
+          onClick={async () => {
+            const result = await sendTest();
+            if (result === "sent") toast.success("Test notification sent");
+            else if (result === "denied") toast.error("Notifications are blocked in your browser");
+            else toast.info("This browser doesn't support notifications");
+          }}
+          variant="outline"
+          className="h-12 w-full rounded-2xl border-white/15 bg-white/5 text-sm font-semibold"
+        >
+          Send a test Daily Word alert
+        </Button>
+      </div>
+
+      <h2 className="mb-3 mt-7 text-xs font-bold uppercase tracking-widest text-white/50">App</h2>
+      <div className="space-y-2">
+        <Row
+          icon={<Download className="h-4 w-4" />}
+          title={installed ? "Installed" : "Add to home screen"}
+          description={
+            installed
+              ? "WordSnap AI is installed on this device."
+              : canInstall
+                ? "One tap to install the app."
+                : platform === "ios"
+                  ? "In Safari: Share → Add to Home Screen."
+                  : "Use your browser menu → Install app."
+          }
+        >
+          {!installed && canInstall && (
+            <Button
+              onClick={async () => {
+                const outcome = await promptInstall();
+                if (outcome === "accepted") toast.success("Installing WordSnap AI…");
+              }}
+              className="h-9 rounded-xl gradient-primary px-4 text-xs font-semibold"
+            >
+              Install
+            </Button>
+          )}
+        </Row>
+        <Row
+          icon={<Eye className="h-4 w-4" />}
+          title="Data storage"
+          description="Saved words, history and preferences live on this device until your account backend is connected."
+        />
+      </div>
+    </div>
   );
 }
