@@ -68,9 +68,7 @@ function Login() {
           />
         </div>
         <div className="text-right">
-          <button type="button" className="text-xs text-white/50 hover:text-white/80">
-            Forgot password?
-          </button>
+          <Link to="/forgot-password" className="text-xs text-white/50 hover:text-white/80">Forgot password?</Link>
         </div>
         <Button
           type="submit"

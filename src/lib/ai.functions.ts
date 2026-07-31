@@ -1,58 +1,56 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-const ExplainInput = z.object({ query: z.string().min(1).max(400) });
+const ExplainInput = z.object({
+  word: z.string().min(1).max(120),
+  context: z.string().max(600).optional(),
+});
 
-export type Explanation = {
-  word: string;
-  phonetic: string;
-  partOfSpeech: string;
-  level: "Beginner" | "Intermediate" | "Advanced";
-  meaning: string;
-  aiExplanation: string;
-  translation: string;
-  examples: string[];
-  synonyms: string[];
-  antonyms: string[];
-  related: string[];
+export type AiExplanation = {
+  simple: string;
+  eli10: string;
+  hindi: string;
+  gujarati: string;
+  memoryTrick: string;
+  realLifeExamples: string[];
+  usageTips: string[];
 };
+
+export type AiStatus = { configured: boolean };
 
 const schema = {
   type: "object",
   properties: {
-    word: { type: "string" },
-    phonetic: { type: "string" },
-    partOfSpeech: { type: "string" },
-    level: { type: "string", enum: ["Beginner", "Intermediate", "Advanced"] },
-    meaning: { type: "string" },
-    aiExplanation: { type: "string" },
-    translation: { type: "string" },
-    examples: { type: "array", items: { type: "string" } },
-    synonyms: { type: "array", items: { type: "string" } },
-    antonyms: { type: "array", items: { type: "string" } },
-    related: { type: "array", items: { type: "string" } },
+    simple: { type: "string" },
+    eli10: { type: "string" },
+    hindi: { type: "string" },
+    gujarati: { type: "string" },
+    memoryTrick: { type: "string" },
+    realLifeExamples: { type: "array", items: { type: "string" } },
+    usageTips: { type: "array", items: { type: "string" } },
   },
   required: [
-    "word",
-    "phonetic",
-    "partOfSpeech",
-    "level",
-    "meaning",
-    "aiExplanation",
-    "translation",
-    "examples",
-    "synonyms",
-    "antonyms",
-    "related",
+    "simple",
+    "eli10",
+    "hindi",
+    "gujarati",
+    "memoryTrick",
+    "realLifeExamples",
+    "usageTips",
   ],
   additionalProperties: false,
 } as const;
 
-export const explainTerm = createServerFn({ method: "POST" })
+/** Lets the UI show a "ready for AI" state instead of an error when no key exists. */
+export const getAiStatus = createServerFn({ method: "GET" }).handler(
+  async (): Promise<AiStatus> => ({ configured: Boolean(process.env.LOVABLE_API_KEY) }),
+);
+
+export const explainWord = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => ExplainInput.parse(input))
-  .handler(async ({ data }): Promise<Explanation> => {
+  .handler(async ({ data }): Promise<AiExplanation> => {
     const key = process.env.LOVABLE_API_KEY;
-    if (!key) throw new Error("AI is not configured yet.");
+    if (!key) throw new Error("AI is not connected yet.");
 
     const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -63,9 +61,14 @@ export const explainTerm = createServerFn({ method: "POST" })
           {
             role: "system",
             content:
-              "You explain English words, phrases and sentences for language learners. Keep the meaning to one sentence, aiExplanation to 2-3 friendly sentences, translation in Hindi, 2-3 examples, and up to 4 items per list. Use IPA for phonetic.",
+              "You help English learners understand words. Keep 'simple' to one clear sentence, 'eli10' playful and very easy, 'hindi' and 'gujarati' as short natural translations plus a short gloss in that script, 'memoryTrick' one vivid mnemonic, 2-3 realLifeExamples as full sentences, and 2-3 short usageTips.",
           },
-          { role: "user", content: `Explain: ${data.query}` },
+          {
+            role: "user",
+            content: data.context
+              ? `Word: ${data.word}\nDictionary meaning: ${data.context}`
+              : `Word: ${data.word}`,
+          },
         ],
         response_format: {
           type: "json_schema",
@@ -78,10 +81,8 @@ export const explainTerm = createServerFn({ method: "POST" })
     if (res.status === 402) throw new Error("AI credits exhausted. Please add credits to continue.");
     if (!res.ok) throw new Error(`AI request failed (${res.status}).`);
 
-    const json = (await res.json()) as {
-      choices?: Array<{ message?: { content?: string } }>;
-    };
+    const json = (await res.json()) as { choices?: Array<{ message?: { content?: string } }> };
     const content = json.choices?.[0]?.message?.content;
     if (!content) throw new Error("The AI returned an empty response.");
-    return JSON.parse(content) as Explanation;
+    return JSON.parse(content) as AiExplanation;
   });

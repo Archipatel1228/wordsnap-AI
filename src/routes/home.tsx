@@ -1,120 +1,104 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Search, Flame, TrendingUp, Sparkles, Mic } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { BookMarked, Flame, Sparkles } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
-import { MOCK_WORDS, USER_STATS, RECENT_HISTORY } from "@/lib/mock-data";
-import { useState } from "react";
+import { SearchBar } from "@/components/SearchBar";
+import { RecentAndTrending } from "@/components/RecentAndTrending";
+import { Wordmark } from "@/components/Logo";
+import { getWordOfTheDay } from "@/lib/dictionary.functions";
+import { primaryDefinition, primaryPhonetic } from "@/lib/dictionary/types";
+import { useAuth, useData } from "@/lib/services";
 
 export const Route = createFileRoute("/home")({
   head: () => ({
     meta: [
       { title: "Home — WordSnap AI" },
-      { name: "description", content: "Your AI-powered vocabulary dashboard." },
+      {
+        name: "description",
+        content: "Search any English word and get instant dictionary meaning plus AI explanations.",
+      },
+      { property: "og:title", content: "Home — WordSnap AI" },
+      { property: "og:description", content: "Understand anything instantly." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Home,
 });
 
 function Home() {
-  const nav = useNavigate();
-  const [q, setQ] = useState("");
-  const daily = MOCK_WORDS[0];
+  const navigate = useNavigate();
+  const data = useData();
+  const { user } = useAuth();
+  const wordOfDay = useServerFn(getWordOfTheDay);
 
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    nav({ to: "/search", search: { q: q || "serendipity" } });
-  };
+  const stats = useQuery({ queryKey: ["stats"], queryFn: () => data.getStats() });
+  const daily = useQuery({
+    queryKey: ["word-of-the-day"],
+    queryFn: () => wordOfDay(),
+    staleTime: 1000 * 60 * 60 * 6,
+  });
 
   return (
     <AppShell>
-      <div className="px-5 pt-10">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm text-white/50">Good morning,</p>
-            <h1 className="text-2xl font-black">{USER_STATS.name.split(" ")[0]} 👋</h1>
-          </div>
+      <div className="px-5 pt-8">
+        <div className="flex items-center justify-between gap-3">
+          <Wordmark size={36} tagline />
           <div className="glass flex items-center gap-2 rounded-full px-3 py-2">
             <Flame className="h-4 w-4 text-orange-400" />
-            <span className="text-sm font-bold">{USER_STATS.streak}</span>
+            <span className="text-sm font-bold">{stats.data?.streak ?? 0}</span>
           </div>
         </div>
 
-        <form onSubmit={submit} className="relative mt-6">
-          <Search className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-white/50" />
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Explain any word or sentence…"
-            className="h-16 w-full rounded-3xl border border-white/10 bg-white/5 pl-14 pr-14 text-base outline-none placeholder:text-white/40 focus:border-primary/60 focus:bg-white/10"
-          />
-          <button
-            type="button"
-            className="absolute right-3 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-2xl gradient-primary"
-          >
-            <Mic className="h-4 w-4" />
-          </button>
-        </form>
+        {user && <p className="mt-5 text-sm text-white/55">Welcome back, {user.name}.</p>}
 
-        {/* Daily word */}
+        <SearchBar className="mt-4" />
+
         <Link
-          to="/word/$id"
-          params={{ id: daily.id }}
-          className="mt-6 block animate-float-in card-premium relative overflow-hidden rounded-3xl p-5"
+          to="/daily"
+          className="card-premium animate-float-in relative mt-6 block overflow-hidden rounded-3xl p-5"
         >
-          <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full gradient-primary opacity-30 blur-3xl" />
+          <div className="pointer-events-none absolute -right-8 -top-8 h-40 w-40 rounded-full gradient-primary opacity-30 blur-3xl" />
           <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-white/60">
             <Sparkles className="h-3.5 w-3.5" /> Word of the day
           </div>
-          <h2 className="mt-3 text-3xl font-black gradient-text">{daily.word}</h2>
-          <p className="mt-1 text-sm text-white/50">{daily.phonetic} • {daily.partOfSpeech}</p>
-          <p className="mt-3 text-sm text-white/80 line-clamp-2">{daily.meaning}</p>
+          {daily.isPending ? (
+            <div className="mt-4 space-y-3">
+              <div className="h-8 w-40 animate-pulse rounded-2xl bg-white/10" />
+              <div className="h-3 w-full animate-pulse rounded-full bg-white/10" />
+            </div>
+          ) : daily.data ? (
+            <>
+              <h2 className="mt-3 text-3xl font-black gradient-text">{daily.data.word}</h2>
+              <p className="mt-1 text-sm text-white/50">
+                {[primaryPhonetic(daily.data), daily.data.meanings[0]?.partOfSpeech]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </p>
+              <p className="mt-3 line-clamp-2 text-sm text-white/80">
+                {primaryDefinition(daily.data)}
+              </p>
+            </>
+          ) : (
+            <p className="mt-3 text-sm text-white/60">Today's word will appear once you're online.</p>
+          )}
         </Link>
 
-        {/* Stats */}
         <div className="mt-5 grid grid-cols-3 gap-3">
-          <StatCard label="Learned" value={USER_STATS.wordsLearned} />
-          <StatCard label="Saved" value={USER_STATS.wordsSaved} />
-          <StatCard label="Level" value={USER_STATS.level} accent />
+          <StatCard label="Explored" value={stats.data?.wordsLearned ?? 0} />
+          <StatCard label="Saved" value={stats.data?.wordsSaved ?? 0} />
+          <StatCard label="Due" value={stats.data?.dueToday ?? 0} accent />
         </div>
 
-        {/* Progress */}
-        <div className="mt-5 card-premium rounded-3xl p-5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-emerald-400" />
-              <span className="text-sm font-semibold">Weekly progress</span>
-            </div>
-            <span className="text-xs text-white/50">{USER_STATS.xp}/{USER_STATS.xpToNext} XP</span>
-          </div>
-          <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
-            <div
-              className="h-full gradient-primary"
-              style={{ width: `${(USER_STATS.xp / USER_STATS.xpToNext) * 100}%` }}
-            />
-          </div>
-        </div>
+        <Link
+          to="/vocabulary"
+          className="glass mt-5 flex items-center gap-3 rounded-2xl px-4 py-3.5 text-sm font-medium hover:bg-white/10"
+        >
+          <BookMarked className="h-4 w-4" /> My vocabulary
+        </Link>
 
-        {/* Recent */}
-        <section className="mt-7">
-          <div className="mb-3 flex items-center justify-between">
-            <h3 className="text-lg font-bold">Recent</h3>
-            <Link to="/history" className="text-xs text-white/50">
-              See all
-            </Link>
-          </div>
-          <div className="space-y-2">
-            {RECENT_HISTORY.slice(0, 3).map((r) => (
-              <Link
-                key={r.id}
-                to="/word/$id"
-                params={{ id: r.id }}
-                className="glass flex items-center justify-between rounded-2xl px-4 py-3 hover:bg-white/10"
-              >
-                <span className="font-medium">{r.word}</span>
-                <span className="text-xs text-white/40">{r.time}</span>
-              </Link>
-            ))}
-          </div>
-        </section>
+        <RecentAndTrending onPick={(word) => navigate({ to: "/search", search: { q: word } })} />
       </div>
     </AppShell>
   );

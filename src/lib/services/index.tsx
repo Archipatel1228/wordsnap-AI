@@ -1,11 +1,12 @@
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { mockAuthService } from "./mock-auth";
-import { mockDataService } from "./mock-data-service";
-import type { AppUser, AuthService, DataService } from "./types";
+import { localAuthService } from "./local-auth";
+import { localDataService } from "./local-data-service";
+import type { AppUser, AuthService, DataService, UserPreferences } from "./types";
 
 export type Services = { auth: AuthService; data: DataService };
 
-const defaultServices: Services = { auth: mockAuthService, data: mockDataService };
+const defaultServices: Services = { auth: localAuthService, data: localDataService };
 
 const ServicesContext = createContext<Services>(defaultServices);
 
@@ -49,4 +50,25 @@ export function useData() {
   return useServices().data;
 }
 
-export type { AppUser, AuthService, DataService };
+/** Preferences shared across screens (accessibility, translation language, alerts). */
+export function usePreferences() {
+  const data = useData();
+  const queryClient = useQueryClient();
+  const query = useQuery({
+    queryKey: ["preferences"],
+    queryFn: () => data.getPreferences(),
+    staleTime: Infinity,
+  });
+
+  const update = async (patch: Partial<UserPreferences>) => {
+    const current = query.data ?? (await data.getPreferences());
+    const next = { ...current, ...patch };
+    await data.setPreferences(next);
+    queryClient.setQueryData(["preferences"], next);
+    return next;
+  };
+
+  return { preferences: query.data, update, loading: query.isPending };
+}
+
+export type { AppUser, AuthService, DataService, UserPreferences };
