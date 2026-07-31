@@ -1,21 +1,34 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AppShell, ScreenHeader } from "@/components/AppShell";
-import { MOCK_WORDS } from "@/lib/mock-data";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { Calendar, ArrowRight } from "lucide-react";
+import { AppShell, ScreenHeader } from "@/components/AppShell";
+import { EmptyState } from "@/components/EmptyState";
+import { getWordOfTheDay } from "@/lib/dictionary.functions";
+import { primaryDefinition, primaryPhonetic } from "@/lib/dictionary/types";
 
 export const Route = createFileRoute("/daily")({
   head: () => ({
     meta: [
       { title: "Daily Word — WordSnap AI" },
-      { name: "description", content: "Learn a new word every day." },
+      { name: "description", content: "A new real English word to learn every day." },
+      { property: "og:title", content: "Daily Word — WordSnap AI" },
+      { property: "og:description", content: "Learn a new word every day with WordSnap AI." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Daily,
 });
 
 function Daily() {
-  const today = MOCK_WORDS[0];
-  const upcoming = MOCK_WORDS.slice(1, 5);
+  const wordOfDay = useServerFn(getWordOfTheDay);
+  const query = useQuery({
+    queryKey: ["word-of-the-day"],
+    queryFn: () => wordOfDay(),
+    staleTime: 1000 * 60 * 60 * 6,
+  });
+
   const dateStr = new Date().toLocaleDateString(undefined, {
     weekday: "long",
     month: "long",
@@ -25,52 +38,39 @@ function Daily() {
   return (
     <AppShell>
       <ScreenHeader title="Daily Word" subtitle={dateStr} />
-
       <div className="px-5">
-        <Link
-          to="/word/$id"
-          params={{ id: today.id }}
-          className="block relative overflow-hidden rounded-[2rem] p-6 shadow-[var(--shadow-glow)]"
-          style={{ backgroundImage: "var(--gradient-primary)" }}
-        >
-          <div className="absolute -right-10 -bottom-10 h-52 w-52 rounded-full bg-white/20 blur-3xl" />
-          <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-white/80">
-            <Calendar className="h-3.5 w-3.5" /> Today's word
-          </div>
-          <h2 className="mt-3 text-5xl font-black leading-tight">{today.word}</h2>
-          <p className="mt-1 text-sm text-white/80">
-            {today.phonetic} · {today.partOfSpeech}
-          </p>
-          <p className="mt-4 text-base leading-relaxed text-white/95">{today.meaning}</p>
-          <p className="mt-4 rounded-2xl bg-white/15 px-4 py-3 text-sm italic backdrop-blur">
-            "{today.examples[0]}"
-          </p>
-          <div className="mt-5 flex items-center gap-1 text-sm font-semibold">
-            Explore full details <ArrowRight className="h-4 w-4" />
-          </div>
-        </Link>
-
-        <h3 className="mt-8 mb-3 text-sm font-bold uppercase tracking-widest text-white/50">
-          Coming up this week
-        </h3>
-        <div className="space-y-2">
-          {upcoming.map((w, i) => (
-            <Link
-              key={w.id}
-              to="/word/$id"
-              params={{ id: w.id }}
-              className="glass flex items-center gap-4 rounded-2xl p-4"
-            >
-              <div className="grid h-12 w-12 place-items-center rounded-2xl gradient-primary text-sm font-black">
-                +{i + 1}d
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="font-bold">{w.word}</div>
-                <div className="truncate text-xs text-white/50">{w.meaning}</div>
-              </div>
-            </Link>
-          ))}
-        </div>
+        {query.isPending ? (
+          <div className="card-premium h-64 animate-pulse rounded-[2rem]" />
+        ) : query.data ? (
+          <Link
+            to="/word/$id"
+            params={{ id: query.data.word }}
+            className="relative block overflow-hidden rounded-[2rem] p-6 shadow-[var(--shadow-glow)]"
+            style={{ backgroundImage: "var(--gradient-primary)" }}
+          >
+            <div className="pointer-events-none absolute -bottom-10 -right-10 h-52 w-52 rounded-full bg-white/20 blur-3xl" />
+            <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-white/80">
+              <Calendar className="h-3.5 w-3.5" /> Today's word
+            </div>
+            <h2 className="mt-3 text-5xl font-black leading-tight">{query.data.word}</h2>
+            <p className="mt-1 text-sm text-white/80">
+              {[primaryPhonetic(query.data), query.data.meanings[0]?.partOfSpeech]
+                .filter(Boolean)
+                .join(" · ")}
+            </p>
+            <p className="mt-4 text-base leading-relaxed text-white/95">
+              {primaryDefinition(query.data)}
+            </p>
+            <div className="mt-5 flex items-center gap-1 text-sm font-semibold">
+              Explore full details <ArrowRight className="h-4 w-4" />
+            </div>
+          </Link>
+        ) : (
+          <EmptyState
+            title="Today's word isn't available"
+            description="We couldn't reach the dictionary service. Check your connection and try again."
+          />
+        )}
       </div>
     </AppShell>
   );
