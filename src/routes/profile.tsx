@@ -1,89 +1,95 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { BookMarked, Flame, Heart, LogOut, Settings, ChevronRight } from "lucide-react";
 import { AppShell, ScreenHeader } from "@/components/AppShell";
-import { USER_STATS, ACHIEVEMENTS } from "@/lib/mock-data";
-import { Settings, Flame, BookMarked, Trophy, LogOut, ChevronRight } from "lucide-react";
+import { LocalOnlyNotice } from "@/components/EmptyState";
+import { Button } from "@/components/ui/button";
+import { useAuth, useData } from "@/lib/services";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
       { title: "Profile — WordSnap AI" },
-      { name: "description", content: "Your learning profile and achievements." },
+      { name: "description", content: "Your WordSnap AI learning profile and progress." },
+      { property: "og:title", content: "Profile — WordSnap AI" },
+      { property: "og:description", content: "Track your streak, saved words and progress." },
+      { property: "og:type", content: "profile" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Profile,
 });
 
 function Profile() {
+  const { user, auth } = useAuth();
+  const data = useData();
+  const navigate = useNavigate();
+  const stats = useQuery({ queryKey: ["stats"], queryFn: () => data.getStats() });
+
   return (
     <AppShell>
       <ScreenHeader
         title="Profile"
         right={
-          <Link
-            to="/settings"
-            className="glass grid h-11 w-11 place-items-center rounded-2xl"
-          >
+          <Link to="/settings" aria-label="Settings" className="glass grid h-11 w-11 place-items-center rounded-2xl">
             <Settings className="h-5 w-5" />
           </Link>
         }
       />
 
       <div className="px-5">
-        <div className="card-premium relative overflow-hidden rounded-3xl p-6 text-center">
-          <div className="absolute -left-10 -top-10 h-40 w-40 rounded-full gradient-primary opacity-30 blur-3xl" />
-          <div className="mx-auto grid h-24 w-24 place-items-center rounded-full gradient-primary text-3xl font-black shadow-[var(--shadow-glow)]">
-            {USER_STATS.name.charAt(0)}
+        {user ? (
+          <div className="card-premium relative overflow-hidden rounded-3xl p-6 text-center">
+            <div className="pointer-events-none absolute -left-10 -top-10 h-40 w-40 rounded-full gradient-primary opacity-30 blur-3xl" />
+            <div className="mx-auto grid h-24 w-24 place-items-center rounded-full gradient-primary text-3xl font-black shadow-[var(--shadow-glow)]">
+              {user.name.charAt(0).toUpperCase()}
+            </div>
+            <h2 className="mt-4 text-xl font-black">{user.name}</h2>
+            <p className="text-sm text-white/50">{user.email}</p>
           </div>
-          <h2 className="mt-4 text-xl font-black">{USER_STATS.name}</h2>
-          <p className="text-sm text-white/50">{USER_STATS.email}</p>
+        ) : (
+          <div className="card-premium rounded-3xl p-6 text-center">
+            <h2 className="text-lg font-bold">You're browsing as a guest</h2>
+            <p className="mt-2 text-sm text-white/60">
+              Sign in to keep your vocabulary, history and streak in sync across devices.
+            </p>
+            <div className="mt-5 flex gap-2">
+              <Button asChild className="h-11 flex-1 rounded-2xl gradient-primary text-sm font-semibold">
+                <Link to="/login">Sign in</Link>
+              </Button>
+              <Button asChild variant="outline" className="h-11 flex-1 rounded-2xl border-white/15 bg-white/5 text-sm">
+                <Link to="/register">Create account</Link>
+              </Button>
+            </div>
+          </div>
+        )}
 
-          <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs">
-            <span className="gradient-text font-bold">Level {USER_STATS.level}</span>
-            <span className="text-white/40">•</span>
-            <span>{USER_STATS.xp} XP</span>
-          </div>
-          <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
-            <div
-              className="h-full gradient-primary"
-              style={{ width: `${(USER_STATS.xp / USER_STATS.xpToNext) * 100}%` }}
-            />
-          </div>
-        </div>
+        {data.isLocalOnly && <LocalOnlyNotice label="Your progress" />}
 
         <div className="mt-4 grid grid-cols-3 gap-3">
-          <Stat icon={<BookMarked className="h-4 w-4" />} label="Learned" value={USER_STATS.wordsLearned} />
-          <Stat icon={<Trophy className="h-4 w-4 text-amber-400" />} label="Saved" value={USER_STATS.wordsSaved} />
-          <Stat icon={<Flame className="h-4 w-4 text-orange-400" />} label="Streak" value={USER_STATS.streak} />
-        </div>
-
-        <h3 className="mt-7 mb-3 text-sm font-bold uppercase tracking-widest text-white/50">
-          Achievements
-        </h3>
-        <div className="grid grid-cols-3 gap-3">
-          {ACHIEVEMENTS.map((a) => (
-            <div
-              key={a.id}
-              className={`aspect-square rounded-2xl p-3 text-center transition-all ${
-                a.unlocked
-                  ? "card-premium"
-                  : "border border-dashed border-white/10 opacity-40"
-              }`}
-            >
-              <div className="text-3xl">{a.icon}</div>
-              <div className="mt-2 text-[11px] font-semibold leading-tight">{a.name}</div>
-            </div>
-          ))}
+          <Stat icon={<BookMarked className="h-4 w-4" />} label="Saved" value={stats.data?.wordsSaved ?? 0} />
+          <Stat icon={<Heart className="h-4 w-4 text-accent" />} label="Favourites" value={stats.data?.favourites ?? 0} />
+          <Stat icon={<Flame className="h-4 w-4 text-orange-400" />} label="Streak" value={stats.data?.streak ?? 0} />
         </div>
 
         <div className="mt-6 space-y-2">
-          <MenuItem to="/settings" label="Settings & Preferences" />
-          <MenuItem to="/vocabulary" label="My Vocabulary" />
-          <MenuItem to="/history" label="Search History" />
+          <MenuItem to="/vocabulary" label="My vocabulary" />
+          <MenuItem to="/flashcards" label="Flashcard revision" />
+          <MenuItem to="/history" label="Search history" />
+          <MenuItem to="/settings" label="Settings & accessibility" />
         </div>
 
-        <button className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border border-red-500/30 bg-red-500/10 py-3.5 text-sm font-semibold text-red-400 hover:bg-red-500/20">
-          <LogOut className="h-4 w-4" /> Sign out
-        </button>
+        {user && (
+          <button
+            onClick={async () => {
+              await auth.signOut();
+              navigate({ to: "/login" });
+            }}
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border border-red-500/30 bg-red-500/10 py-3.5 text-sm font-semibold text-red-300 hover:bg-red-500/20"
+          >
+            <LogOut className="h-4 w-4" /> Sign out
+          </button>
+        )}
       </div>
     </AppShell>
   );
