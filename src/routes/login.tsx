@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Mail, Lock, Sparkles } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { useAuth } from "@/lib/services";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,18 +19,36 @@ export const Route = createFileRoute("/login")({
 function Login() {
   const nav = useNavigate();
   const { auth } = useAuth();
-  const [email, setEmail] = useState("alex@wordsnap.ai");
-  const [password, setPassword] = useState("password");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
 
   const go = async (e: React.FormEvent) => {
     e.preventDefault();
-    await auth.signInWithPassword(email, password);
-    nav({ to: "/home" });
+    setBusy(true);
+    try {
+      await auth.signInWithPassword(email, password);
+      toast.success("Welcome back!");
+      nav({ to: "/home" });
+    } catch (error) {
+      toast.error((error as Error).message);
+    } finally {
+      setBusy(false);
+    }
   };
   const social = async (fn: () => Promise<unknown>) => {
-    await fn();
-    nav({ to: "/home" });
+    setBusy(true);
+    try {
+      const result = await fn();
+      if (result === null) return; // redirecting to the provider
+      nav({ to: "/home" });
+    } catch (error) {
+      toast.error((error as Error).message);
+    } finally {
+      setBusy(false);
+    }
   };
+
   return (
     <div className="flex min-h-screen flex-col px-6 py-10">
       <div className="mt-6 flex items-center gap-3">
