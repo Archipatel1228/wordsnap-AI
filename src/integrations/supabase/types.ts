@@ -14,7 +14,180 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      activity_days: {
+        Row: {
+          day: string
+          user_id: string
+        }
+        Insert: {
+          day: string
+          user_id: string
+        }
+        Update: {
+          day?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string
+          id: string
+          name?: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      push_tokens: {
+        Row: {
+          created_at: string
+          id: string
+          token: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          token: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          token?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      saved_words: {
+        Row: {
+          audio: string | null
+          created_at: string
+          definition: string
+          favourite: boolean
+          folder: string | null
+          id: string
+          part_of_speech: string | null
+          phonetic: string | null
+          srs_due_at: string
+          srs_ease: number
+          srs_interval_days: number
+          srs_repetitions: number
+          user_id: string
+          word: string
+          word_key: string | null
+        }
+        Insert: {
+          audio?: string | null
+          created_at?: string
+          definition?: string
+          favourite?: boolean
+          folder?: string | null
+          id?: string
+          part_of_speech?: string | null
+          phonetic?: string | null
+          srs_due_at?: string
+          srs_ease?: number
+          srs_interval_days?: number
+          srs_repetitions?: number
+          user_id: string
+          word: string
+          word_key?: string | null
+        }
+        Update: {
+          audio?: string | null
+          created_at?: string
+          definition?: string
+          favourite?: boolean
+          folder?: string | null
+          id?: string
+          part_of_speech?: string | null
+          phonetic?: string | null
+          srs_due_at?: string
+          srs_ease?: number
+          srs_interval_days?: number
+          srs_repetitions?: number
+          user_id?: string
+          word?: string
+          word_key?: string | null
+        }
+        Relationships: []
+      }
+      search_history: {
+        Row: {
+          id: string
+          user_id: string
+          viewed_at: string
+          word: string
+          word_key: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          viewed_at?: string
+          word: string
+          word_key?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          viewed_at?: string
+          word?: string
+          word_key?: string | null
+        }
+        Relationships: []
+      }
+      user_preferences: {
+        Row: {
+          daily_word: boolean
+          dyslexia_font: boolean
+          hour: number
+          reduce_motion: boolean
+          streak_reminder: boolean
+          translation_language: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          daily_word?: boolean
+          dyslexia_font?: boolean
+          hour?: number
+          reduce_motion?: boolean
+          streak_reminder?: boolean
+          translation_language?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          daily_word?: boolean
+          dyslexia_font?: boolean
+          hour?: number
+          reduce_motion?: boolean
+          streak_reminder?: boolean
+          translation_language?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
