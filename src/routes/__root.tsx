@@ -16,6 +16,9 @@ import { OfflineBanner } from "@/components/OfflineBanner";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { ServicesProvider, usePreferences } from "@/lib/services";
 import { registerServiceWorker } from "@/lib/register-sw";
+import { installDiagnostics } from "@/lib/diagnostics";
+import { supabase } from "@/integrations/supabase/client";
+
 
 function NotFoundComponent() {
   return (
