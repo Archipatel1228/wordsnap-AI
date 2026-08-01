@@ -24,6 +24,8 @@ function Profile() {
   const { user, auth } = useAuth();
   const data = useData();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const stats = useQuery({ queryKey: ["stats"], queryFn: () => data.getStats() });
 
   return (
