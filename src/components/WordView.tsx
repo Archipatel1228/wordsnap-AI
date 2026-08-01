@@ -48,22 +48,28 @@ export function WordView({ word }: { word: string }) {
 
   const toggleSave = async () => {
     if (!entry) return;
-    if (isSaved) {
-      await data.removeSavedWord(entry.word);
-      toast.success(`Removed “${entry.word}”`);
-    } else {
-      await data.saveWord({
-        word: entry.word,
-        definition: primaryDefinition(entry),
-        partOfSpeech: entry.meanings[0]?.partOfSpeech,
-        phonetic: primaryPhonetic(entry),
-        audio: primaryAudio(entry),
-      });
-      toast.success(`Saved “${entry.word}” to your vocabulary`);
+    try {
+      if (isSaved) {
+        await data.removeSavedWord(entry.word);
+        toast.success(`Removed “${entry.word}”`);
+      } else {
+        await data.saveWord({
+          word: entry.word,
+          definition: primaryDefinition(entry),
+          partOfSpeech: entry.meanings[0]?.partOfSpeech,
+          phonetic: primaryPhonetic(entry),
+          audio: primaryAudio(entry),
+        });
+        toast.success(`Saved “${entry.word}” to your vocabulary`);
+      }
+    } catch (error) {
+      toast.error((error as Error).message);
+      return;
     }
     await queryClient.invalidateQueries({ queryKey: ["saved-words"] });
     await queryClient.invalidateQueries({ queryKey: ["stats"] });
   };
+
 
   const copy = async () => {
     if (!entry) return;
