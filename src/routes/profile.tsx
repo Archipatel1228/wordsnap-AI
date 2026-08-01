@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { BookMarked, Flame, Heart, LogOut, Settings, ChevronRight } from "lucide-react";
 import { AppShell, ScreenHeader } from "@/components/AppShell";
 import { LocalOnlyNotice } from "@/components/EmptyState";
@@ -24,6 +24,8 @@ function Profile() {
   const { user, auth } = useAuth();
   const data = useData();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const stats = useQuery({ queryKey: ["stats"], queryFn: () => data.getStats() });
 
   return (
@@ -82,14 +84,17 @@ function Profile() {
         {user && (
           <button
             onClick={async () => {
+              await queryClient.cancelQueries();
+              queryClient.clear();
               await auth.signOut();
-              navigate({ to: "/login" });
+              navigate({ to: "/login", replace: true });
             }}
             className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border border-red-500/30 bg-red-500/10 py-3.5 text-sm font-semibold text-red-300 hover:bg-red-500/20"
           >
             <LogOut className="h-4 w-4" /> Sign out
           </button>
         )}
+
       </div>
     </AppShell>
   );

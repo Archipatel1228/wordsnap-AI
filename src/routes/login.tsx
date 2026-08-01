@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Mail, Lock, Sparkles } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { useAuth } from "@/lib/services";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,18 +19,36 @@ export const Route = createFileRoute("/login")({
 function Login() {
   const nav = useNavigate();
   const { auth } = useAuth();
-  const [email, setEmail] = useState("alex@wordsnap.ai");
-  const [password, setPassword] = useState("password");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
 
   const go = async (e: React.FormEvent) => {
     e.preventDefault();
-    await auth.signInWithPassword(email, password);
-    nav({ to: "/home" });
+    setBusy(true);
+    try {
+      await auth.signInWithPassword(email, password);
+      toast.success("Welcome back!");
+      nav({ to: "/home" });
+    } catch (error) {
+      toast.error((error as Error).message);
+    } finally {
+      setBusy(false);
+    }
   };
   const social = async (fn: () => Promise<unknown>) => {
-    await fn();
-    nav({ to: "/home" });
+    setBusy(true);
+    try {
+      const result = await fn();
+      if (result === null) return; // redirecting to the provider
+      nav({ to: "/home" });
+    } catch (error) {
+      toast.error((error as Error).message);
+    } finally {
+      setBusy(false);
+    }
   };
+
   return (
     <div className="flex min-h-screen flex-col px-6 py-10">
       <div className="mt-6 flex items-center gap-3">
@@ -51,6 +70,8 @@ function Login() {
           <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
           <Input
             type="email"
+            required
+            autoComplete="email"
             placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -61,6 +82,8 @@ function Login() {
           <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
           <Input
             type="password"
+            required
+            autoComplete="current-password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -72,9 +95,10 @@ function Login() {
         </div>
         <Button
           type="submit"
+          disabled={busy}
           className="h-14 w-full rounded-2xl gradient-primary text-base font-semibold shadow-[var(--shadow-glow)]"
         >
-          Sign in
+          {busy ? "Signing in…" : "Sign in"}
         </Button>
       </form>
 
@@ -87,18 +111,26 @@ function Login() {
       <div className="space-y-3">
         <Button
           onClick={() => social(() => auth.signInWithGoogle())}
+          disabled={busy}
           variant="outline"
           className="h-14 w-full rounded-2xl border-white/10 bg-white/5 text-base hover:bg-white/10"
         >
           <GoogleIcon /> Continue with Google
         </Button>
         <Button
-          onClick={() => social(() => auth.signInAsGuest())}
+          onClick={() => {
+            void auth.signInAsGuest();
+            toast.info("Browsing as guest — sign in to save your words.");
+            nav({ to: "/home" });
+          }}
+          disabled={busy}
+
           variant="ghost"
           className="h-14 w-full rounded-2xl text-base text-white/70 hover:bg-white/5"
         >
           Continue as Guest
         </Button>
+
       </div>
 
       <p className="mt-8 text-center text-sm text-white/60">

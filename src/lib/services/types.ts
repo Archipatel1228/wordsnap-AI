@@ -17,13 +17,16 @@ export type AuthService = {
   getUser(): Promise<AppUser | null>;
   signInWithPassword(email: string, password: string): Promise<AppUser>;
   signUp(name: string, email: string, password: string): Promise<AppUser>;
-  signInWithGoogle(): Promise<AppUser>;
-  signInAsGuest(): Promise<AppUser>;
+  /** Resolves to null when the provider redirects the browser away. */
+  signInWithGoogle(): Promise<AppUser | null>;
+  /** Guests browse without an account; nothing is persisted. */
+  signInAsGuest(): Promise<AppUser | null>;
   sendPasswordReset(email: string): Promise<void>;
   updateProfile(patch: Partial<Pick<AppUser, "name" | "avatarUrl">>): Promise<AppUser>;
   signOut(): Promise<void>;
   onAuthStateChange(cb: (user: AppUser | null) => void): () => void;
 };
+
 
 /** Spaced-repetition state (SM-2 inspired). */
 export type SrsState = {
@@ -39,10 +42,23 @@ export type SavedWord = {
   partOfSpeech?: string;
   phonetic?: string;
   audio?: string;
+  /** Optional collection the word belongs to. */
+  folder?: string;
   favourite: boolean;
   createdAt: number;
   srs: SrsState;
 };
+
+/** Portable JSON backup of everything the learner owns. */
+export type VocabularyBackup = {
+  format: "wordsnap-backup";
+  version: 1;
+  exportedAt: number;
+  savedWords: SavedWord[];
+  history: HistoryItem[];
+  preferences?: UserPreferences;
+};
+
 
 export type HistoryItem = { word: string; at: number };
 
@@ -89,8 +105,13 @@ export type DataService = {
   getCachedExplanation<T>(key: string): Promise<CachedExplanation<T> | null>;
   setCachedExplanation<T>(key: string, value: T): Promise<void>;
 
+  /** JSON backup of saved words, folders and flashcard progress */
+  exportBackup(): Promise<VocabularyBackup>;
+  importBackup(backup: VocabularyBackup): Promise<{ words: number; history: number }>;
+
   /** Persist a device push token once a push provider is connected. */
   registerPushToken(token: string): Promise<void>;
+
 
   /** True while data lives on the device only (pre-Supabase). */
   readonly isLocalOnly: boolean;

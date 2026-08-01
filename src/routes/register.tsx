@@ -1,5 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Mail, Lock, User } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { useAuth } from "@/lib/services";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -15,6 +18,32 @@ export const Route = createFileRoute("/register")({
 
 function Register() {
   const nav = useNavigate();
+  const { auth } = useAuth();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      await auth.signUp(name, email, password);
+      toast.success("Account created!");
+      nav({ to: "/home" });
+    } catch (error) {
+      const err = error as Error & { code?: string };
+      if (err.code === "email_confirmation_required") {
+        toast.success(err.message);
+        nav({ to: "/login" });
+      } else {
+        toast.error(err.message);
+      }
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col px-6 py-10">
       <Link to="/login" className="text-sm text-white/60">
@@ -25,32 +54,50 @@ function Register() {
         <p className="mt-2 text-sm text-white/60">Start your smart vocabulary journey.</p>
       </div>
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          nav({ to: "/home" });
-        }}
-        className="mt-8 space-y-4"
-      >
-        {[
-          { icon: User, type: "text", placeholder: "Full name" },
-          { icon: Mail, type: "email", placeholder: "Email address" },
-          { icon: Lock, type: "password", placeholder: "Password" },
-        ].map((f, i) => (
-          <div key={i} className="relative">
-            <f.icon className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-            <Input
-              type={f.type}
-              placeholder={f.placeholder}
-              className="h-14 rounded-2xl border-white/10 bg-white/5 pl-11 text-base placeholder:text-white/40"
-            />
-          </div>
-        ))}
+      <form onSubmit={submit} className="mt-8 space-y-4">
+        <div className="relative">
+          <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+          <Input
+            type="text"
+            required
+            autoComplete="name"
+            placeholder="Full name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="h-14 rounded-2xl border-white/10 bg-white/5 pl-11 text-base placeholder:text-white/40"
+          />
+        </div>
+        <div className="relative">
+          <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+          <Input
+            type="email"
+            required
+            autoComplete="email"
+            placeholder="Email address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="h-14 rounded-2xl border-white/10 bg-white/5 pl-11 text-base placeholder:text-white/40"
+          />
+        </div>
+        <div className="relative">
+          <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+          <Input
+            type="password"
+            required
+            minLength={6}
+            autoComplete="new-password"
+            placeholder="Password (min 6 characters)"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="h-14 rounded-2xl border-white/10 bg-white/5 pl-11 text-base placeholder:text-white/40"
+          />
+        </div>
         <Button
           type="submit"
+          disabled={busy}
           className="h-14 w-full rounded-2xl gradient-primary text-base font-semibold shadow-[var(--shadow-glow)]"
         >
-          Create account
+          {busy ? "Creating…" : "Create account"}
         </Button>
       </form>
 

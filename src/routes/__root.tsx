@@ -16,6 +16,9 @@ import { OfflineBanner } from "@/components/OfflineBanner";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { ServicesProvider, usePreferences } from "@/lib/services";
 import { registerServiceWorker } from "@/lib/register-sw";
+import { installDiagnostics } from "@/lib/diagnostics";
+import { supabase } from "@/integrations/supabase/client";
+
 
 function NotFoundComponent() {
   return (
@@ -138,16 +141,31 @@ function AccessibilityEffects() {
   return null;
 }
 
+/** Refresh every cached read when the signed-in account changes. */
+function AuthSync({ queryClient }: { queryClient: QueryClient }) {
+  useEffect(() => {
+    const { data } = supabase.auth.onAuthStateChange((event) => {
+      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+      if (event === "SIGNED_OUT") queryClient.clear();
+      else void queryClient.invalidateQueries();
+    });
+    return () => data.subscription.unsubscribe();
+  }, [queryClient]);
+  return null;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   useEffect(() => {
+    installDiagnostics();
     void registerServiceWorker();
   }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
       <ServicesProvider>
+        <AuthSync queryClient={queryClient} />
         <AccessibilityEffects />
         <OfflineBanner />
         <Outlet />
@@ -157,3 +175,4 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
