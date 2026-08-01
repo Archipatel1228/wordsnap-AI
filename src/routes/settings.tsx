@@ -1,11 +1,24 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Bell, Download, Eye, Languages, Type, Zap } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  ArrowLeft,
+  Bell,
+  Download,
+  Eye,
+  HardDriveDownload,
+  Languages,
+  Type,
+  Zap,
+} from "lucide-react";
+import { useRef } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { usePwaInstall } from "@/hooks/usePwaInstall";
 import { useNotifications } from "@/hooks/useNotifications";
-import { usePreferences } from "@/lib/services";
+import { usePreferences, useData } from "@/lib/services";
+import type { VocabularyBackup } from "@/lib/services/types";
+
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
