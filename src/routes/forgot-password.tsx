@@ -48,8 +48,9 @@ function ForgotPassword() {
       <Wordmark className="mt-8" />
       <h1 className="mt-8 text-3xl font-black tracking-tight">Reset your password</h1>
       <p className="mt-2 text-sm text-white/60">
-        Enter your email and we'll send a reset link once account services are connected.
+        Enter your email and we'll send you a secure link to choose a new password.
       </p>
+
 
       {sent ? (
         <div className="card-premium mt-8 rounded-3xl p-6 text-sm text-white/80">
