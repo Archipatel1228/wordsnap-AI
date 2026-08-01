@@ -105,8 +105,13 @@ export type DataService = {
   getCachedExplanation<T>(key: string): Promise<CachedExplanation<T> | null>;
   setCachedExplanation<T>(key: string, value: T): Promise<void>;
 
+  /** JSON backup of saved words, folders and flashcard progress */
+  exportBackup(): Promise<VocabularyBackup>;
+  importBackup(backup: VocabularyBackup): Promise<{ words: number; history: number }>;
+
   /** Persist a device push token once a push provider is connected. */
   registerPushToken(token: string): Promise<void>;
+
 
   /** True while data lives on the device only (pre-Supabase). */
   readonly isLocalOnly: boolean;
