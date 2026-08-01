@@ -70,6 +70,8 @@ function Login() {
           <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
           <Input
             type="email"
+            required
+            autoComplete="email"
             placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -80,6 +82,8 @@ function Login() {
           <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
           <Input
             type="password"
+            required
+            autoComplete="current-password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -91,9 +95,10 @@ function Login() {
         </div>
         <Button
           type="submit"
+          disabled={busy}
           className="h-14 w-full rounded-2xl gradient-primary text-base font-semibold shadow-[var(--shadow-glow)]"
         >
-          Sign in
+          {busy ? "Signing in…" : "Sign in"}
         </Button>
       </form>
 
@@ -106,6 +111,7 @@ function Login() {
       <div className="space-y-3">
         <Button
           onClick={() => social(() => auth.signInWithGoogle())}
+          disabled={busy}
           variant="outline"
           className="h-14 w-full rounded-2xl border-white/10 bg-white/5 text-base hover:bg-white/10"
         >
@@ -113,11 +119,13 @@ function Login() {
         </Button>
         <Button
           onClick={() => social(() => auth.signInAsGuest())}
+          disabled={busy}
           variant="ghost"
           className="h-14 w-full rounded-2xl text-base text-white/70 hover:bg-white/5"
         >
           Continue as Guest
         </Button>
+
       </div>
 
       <p className="mt-8 text-center text-sm text-white/60">
