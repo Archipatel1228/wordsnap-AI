@@ -1,12 +1,13 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { localAuthService } from "./local-auth";
-import { localDataService } from "./local-data-service";
+import { supabaseAuthService } from "./supabase-auth";
+import { supabaseDataService } from "./supabase-data";
 import type { AppUser, AuthService, DataService, UserPreferences } from "./types";
 
 export type Services = { auth: AuthService; data: DataService };
 
-const defaultServices: Services = { auth: localAuthService, data: localDataService };
+const defaultServices: Services = { auth: supabaseAuthService, data: supabaseDataService };
+
 
 const ServicesContext = createContext<Services>(defaultServices);
 
