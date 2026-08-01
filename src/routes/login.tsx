@@ -118,8 +118,13 @@ function Login() {
           <GoogleIcon /> Continue with Google
         </Button>
         <Button
-          onClick={() => social(() => auth.signInAsGuest())}
+          onClick={() => {
+            void auth.signInAsGuest();
+            toast.info("Browsing as guest — sign in to save your words.");
+            nav({ to: "/home" });
+          }}
           disabled={busy}
+
           variant="ghost"
           className="h-14 w-full rounded-2xl text-base text-white/70 hover:bg-white/5"
         >
