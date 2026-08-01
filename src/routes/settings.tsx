@@ -61,8 +61,44 @@ function SettingsPage() {
   const { preferences, update } = usePreferences();
   const { permission, sendTest } = useNotifications();
   const { canInstall, installed, platform, promptInstall } = usePwaInstall();
+  const data = useData();
+  const queryClient = useQueryClient();
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const prefs = preferences;
+
+  const exportBackup = async () => {
+    try {
+      const backup = await data.exportBackup();
+      const url = URL.createObjectURL(
+        new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" }),
+      );
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `wordsnap-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success(`Exported ${backup.savedWords.length} saved words`);
+    } catch (error) {
+      toast.error((error as Error).message);
+    }
+  };
+
+  const importBackup = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    try {
+      const parsed = JSON.parse(await file.text()) as VocabularyBackup;
+      const result = await data.importBackup(parsed);
+      await queryClient.invalidateQueries();
+      toast.success(`Restored ${result.words} words and ${result.history} history entries`);
+    } catch (error) {
+      toast.error((error as Error).message || "That file couldn't be read.");
+    }
+  };
+
+
 
   return (
     <div className="mx-auto min-h-dvh w-full max-w-[520px] px-5 pb-20 pt-8">
