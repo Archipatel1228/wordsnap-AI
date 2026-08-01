@@ -42,10 +42,23 @@ export type SavedWord = {
   partOfSpeech?: string;
   phonetic?: string;
   audio?: string;
+  /** Optional collection the word belongs to. */
+  folder?: string;
   favourite: boolean;
   createdAt: number;
   srs: SrsState;
 };
+
+/** Portable JSON backup of everything the learner owns. */
+export type VocabularyBackup = {
+  format: "wordsnap-backup";
+  version: 1;
+  exportedAt: number;
+  savedWords: SavedWord[];
+  history: HistoryItem[];
+  preferences?: UserPreferences;
+};
+
 
 export type HistoryItem = { word: string; at: number };
 
