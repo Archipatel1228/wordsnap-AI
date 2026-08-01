@@ -17,13 +17,16 @@ export type AuthService = {
   getUser(): Promise<AppUser | null>;
   signInWithPassword(email: string, password: string): Promise<AppUser>;
   signUp(name: string, email: string, password: string): Promise<AppUser>;
-  signInWithGoogle(): Promise<AppUser>;
-  signInAsGuest(): Promise<AppUser>;
+  /** Resolves to null when the provider redirects the browser away. */
+  signInWithGoogle(): Promise<AppUser | null>;
+  /** Guests browse without an account; nothing is persisted. */
+  signInAsGuest(): Promise<AppUser | null>;
   sendPasswordReset(email: string): Promise<void>;
   updateProfile(patch: Partial<Pick<AppUser, "name" | "avatarUrl">>): Promise<AppUser>;
   signOut(): Promise<void>;
   onAuthStateChange(cb: (user: AppUser | null) => void): () => void;
 };
+
 
 /** Spaced-repetition state (SM-2 inspired). */
 export type SrsState = {
