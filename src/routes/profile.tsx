@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { BookMarked, Flame, Heart, LogOut, Settings, ChevronRight } from "lucide-react";
 import { AppShell, ScreenHeader } from "@/components/AppShell";
 import { LocalOnlyNotice } from "@/components/EmptyState";
