@@ -82,14 +82,17 @@ function Profile() {
         {user && (
           <button
             onClick={async () => {
+              await queryClient.cancelQueries();
+              queryClient.clear();
               await auth.signOut();
-              navigate({ to: "/login" });
+              navigate({ to: "/login", replace: true });
             }}
             className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border border-red-500/30 bg-red-500/10 py-3.5 text-sm font-semibold text-red-300 hover:bg-red-500/20"
           >
             <LogOut className="h-4 w-4" /> Sign out
           </button>
         )}
+
       </div>
     </AppShell>
   );
