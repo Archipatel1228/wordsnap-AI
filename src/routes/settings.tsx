@@ -167,9 +167,38 @@ function SettingsPage() {
         <Row
           icon={<Eye className="h-4 w-4" />}
           title="Data storage"
-          description="Saved words, history and preferences live on this device until your account backend is connected."
+          description="Saved words, history, streaks and preferences sync securely to your account."
         />
+        <Row
+          icon={<HardDriveDownload className="h-4 w-4" />}
+          title="Backup"
+          description="Export or restore your vocabulary, folders and flashcard progress as JSON."
+        />
+        <div className="grid grid-cols-2 gap-2">
+          <Button
+            onClick={exportBackup}
+            variant="outline"
+            className="h-12 rounded-2xl border-white/15 bg-white/5 text-sm font-semibold"
+          >
+            Export JSON
+          </Button>
+          <Button
+            onClick={() => fileRef.current?.click()}
+            variant="outline"
+            className="h-12 rounded-2xl border-white/15 bg-white/5 text-sm font-semibold"
+          >
+            Import JSON
+          </Button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="application/json,.json"
+            className="hidden"
+            onChange={importBackup}
+          />
+        </div>
       </div>
     </div>
   );
 }
+
