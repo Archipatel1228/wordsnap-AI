@@ -1,0 +1,12 @@
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.profiles TO authenticated;
+GRANT ALL ON public.profiles TO service_role;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.saved_words TO authenticated;
+GRANT ALL ON public.saved_words TO service_role;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.search_history TO authenticated;
+GRANT ALL ON public.search_history TO service_role;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.activity_days TO authenticated;
+GRANT ALL ON public.activity_days TO service_role;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.user_preferences TO authenticated;
+GRANT ALL ON public.user_preferences TO service_role;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.push_tokens TO authenticated;
+GRANT ALL ON public.push_tokens TO service_role;
