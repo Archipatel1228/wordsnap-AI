@@ -1,33 +1,25 @@
-import { useNavigate } from "@tanstack/react-router";
+import { ClientOnly, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Mic, MicOff, Search, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
+import { Search, X } from "lucide-react";
+import { Component, useEffect, useState, type ReactNode } from "react";
 import { suggestWords } from "@/lib/dictionary.functions";
-import { startVoiceSearch, voiceSearchSupported } from "@/lib/speech";
+import { VoiceSearchButton, VoiceSearchButtonFallback } from "@/components/VoiceSearchButton";
 import { cn } from "@/lib/utils";
 
-/** Search field with debounced live autocomplete and voice dictation. */
-export function SearchBar({
-  initialValue = "",
-  autoFocus = false,
-  className,
-}: {
+type SearchBarProps = {
   initialValue?: string;
   autoFocus?: boolean;
   className?: string;
-}) {
+};
+
+/** Search field with debounced live autocomplete and voice dictation. */
+function SearchBarInner({ initialValue = "", autoFocus = false, className }: SearchBarProps) {
   const navigate = useNavigate();
   const suggest = useServerFn(suggestWords);
   const [value, setValue] = useState(initialValue);
   const [debounced, setDebounced] = useState("");
   const [open, setOpen] = useState(false);
-  const [listening, setListening] = useState(false);
-  const [voiceReady, setVoiceReady] = useState(false);
-  const stopRef = useRef<(() => void) | null>(null);
-
-  useEffect(() => setVoiceReady(voiceSearchSupported()), []);
 
   useEffect(() => setValue(initialValue), [initialValue]);
 
@@ -51,29 +43,8 @@ export function SearchBar({
     navigate({ to: "/search", search: { q } });
   };
 
-  const toggleVoice = () => {
-    if (listening) {
-      stopRef.current?.();
-      setListening(false);
-      return;
-    }
-    const stop = startVoiceSearch(
-      (text) => {
-        setValue(text);
-        go(text);
-      },
-      () => setListening(false),
-    );
-    if (!stop) {
-      toast.info("Voice search isn't supported in this browser yet.");
-      return;
-    }
-    stopRef.current = stop;
-    setListening(true);
-  };
-
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn("relative", className)} data-testid="searchbar">
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -109,17 +80,14 @@ export function SearchBar({
             <X className="h-4 w-4" />
           </button>
         )}
-        <button
-          type="button"
-          aria-label={listening ? "Stop voice search" : "Start voice search"}
-          onClick={toggleVoice}
-          className={cn(
-            "absolute right-3 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-2xl transition-all",
-            listening ? "bg-accent animate-pulse-glow" : "gradient-primary",
-          )}
-        >
-          {voiceReady ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
-        </button>
+        <ClientOnly fallback={<VoiceSearchButtonFallback />}>
+          <VoiceSearchButton
+            onTranscript={(text) => {
+              setValue(text);
+              go(text);
+            }}
+          />
+        </ClientOnly>
       </form>
 
       {open && suggestions.length > 0 && (
@@ -140,5 +108,54 @@ export function SearchBar({
         </ul>
       )}
     </div>
+  );
+}
+
+/** Plain, always-safe search form used when the rich search bar fails to render. */
+function SearchBarFallback({ className }: { className?: string }) {
+  return (
+    <div className={cn("relative", className)} data-testid="searchbar-fallback">
+      <form action="/search" method="get" role="search">
+        <label htmlFor="wordsnap-search-fallback" className="sr-only">
+          Search any English word
+        </label>
+        <Search className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-white/45" />
+        <input
+          id="wordsnap-search-fallback"
+          name="q"
+          autoComplete="off"
+          placeholder="Search any English word…"
+          className="h-16 w-full rounded-3xl border border-white/10 bg-white/5 pl-14 pr-24 text-base outline-none placeholder:text-white/40 focus:border-primary/60 focus:bg-white/10"
+        />
+      </form>
+    </div>
+  );
+}
+
+/** Keeps a search-bar crash (e.g. hydration mismatch) from blanking the whole screen. */
+class SearchBarBoundary extends Component<
+  { children: ReactNode; fallback: ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  componentDidCatch(error: unknown) {
+    console.error("SearchBar render failure", error);
+  }
+
+  render() {
+    return this.state.failed ? this.props.fallback : this.props.children;
+  }
+}
+
+export function SearchBar(props: SearchBarProps) {
+  return (
+    <SearchBarBoundary fallback={<SearchBarFallback className={props.className} />}>
+      <SearchBarInner {...props} />
+    </SearchBarBoundary>
   );
 }
