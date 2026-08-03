@@ -24,7 +24,10 @@ export function SearchBar({
   const [debounced, setDebounced] = useState("");
   const [open, setOpen] = useState(false);
   const [listening, setListening] = useState(false);
+  const [voiceReady, setVoiceReady] = useState(false);
   const stopRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => setVoiceReady(voiceSearchSupported()), []);
 
   useEffect(() => setValue(initialValue), [initialValue]);
 
@@ -115,7 +118,7 @@ export function SearchBar({
             listening ? "bg-accent animate-pulse-glow" : "gradient-primary",
           )}
         >
-          {voiceSearchSupported() ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
+          {voiceReady ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
         </button>
       </form>
 
