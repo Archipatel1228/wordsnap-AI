@@ -24,7 +24,10 @@ export function SearchBar({
   const [debounced, setDebounced] = useState("");
   const [open, setOpen] = useState(false);
   const [listening, setListening] = useState(false);
+  const [voiceReady, setVoiceReady] = useState(false);
   const stopRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => setVoiceReady(voiceSearchSupported()), []);
 
   useEffect(() => setValue(initialValue), [initialValue]);
 
