@@ -118,7 +118,7 @@ export function SearchBar({
             listening ? "bg-accent animate-pulse-glow" : "gradient-primary",
           )}
         >
-          {voiceSearchSupported() ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
+          {voiceReady ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
         </button>
       </form>
 
