@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WordSnap AI</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="head">
+      <img src="icons/icon-192.png" alt="" width="28" height="28" />
+      <div>
+        <h1>WordSnap AI</h1>
+        <p id="account">Loading…</p>
+      </div>
+    </header>
+
+    <section id="signed-out" hidden>
+      <p class="muted">Sign in to save words, track streaks and sync your vocabulary.</p>
+      <button class="primary" id="signin">Sign In to WordSnap</button>
+    </section>
+
+    <section id="signed-in" hidden>
+      <div class="stats">
+        <div class="stat"><span id="streak">0</span><small>Day streak</small></div>
+        <div class="stat"><span id="total">0</span><small>Saved words</small></div>
+      </div>
+      <div class="block">
+        <h2>Recently saved</h2>
+        <ul id="recent" class="recent"></ul>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2>Look up a word</h2>
+      <form id="search">
+        <input id="query" type="search" placeholder="e.g. ubiquitous" autocomplete="off" />
+        <button class="primary" type="submit">Explain</button>
+      </form>
+      <div id="result" class="result"></div>
+    </section>
+
+    <footer>
+      <button class="ghost" id="dashboard">Dashboard</button>
+      <button class="ghost" id="settings">Quick settings</button>
+    </footer>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

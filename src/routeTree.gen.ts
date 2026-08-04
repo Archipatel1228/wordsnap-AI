@@ -24,6 +24,7 @@ import { Route as FlashcardsRouteImport } from './routes/flashcards'
 import { Route as DailyRouteImport } from './routes/daily'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WordIdRouteImport } from './routes/word.$id'
+import { Route as ApiPublicLookupRouteImport } from './routes/api/public/lookup'
 
 const VocabularyRoute = VocabularyRouteImport.update({
   id: '/vocabulary',
@@ -100,6 +101,11 @@ const WordIdRoute = WordIdRouteImport.update({
   path: '/word/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicLookupRoute = ApiPublicLookupRouteImport.update({
+  id: '/api/public/lookup',
+  path: '/api/public/lookup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/vocabulary': typeof VocabularyRoute
   '/word/$id': typeof WordIdRoute
+  '/api/public/lookup': typeof ApiPublicLookupRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -134,6 +141,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/vocabulary': typeof VocabularyRoute
   '/word/$id': typeof WordIdRoute
+  '/api/public/lookup': typeof ApiPublicLookupRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -152,6 +160,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/vocabulary': typeof VocabularyRoute
   '/word/$id': typeof WordIdRoute
+  '/api/public/lookup': typeof ApiPublicLookupRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -171,6 +180,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/vocabulary'
     | '/word/$id'
+    | '/api/public/lookup'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -188,6 +198,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/vocabulary'
     | '/word/$id'
+    | '/api/public/lookup'
   id:
     | '__root__'
     | '/'
@@ -205,6 +216,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/vocabulary'
     | '/word/$id'
+    | '/api/public/lookup'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -223,6 +235,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   VocabularyRoute: typeof VocabularyRoute
   WordIdRoute: typeof WordIdRoute
+  ApiPublicLookupRoute: typeof ApiPublicLookupRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -332,6 +345,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WordIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/lookup': {
+      id: '/api/public/lookup'
+      path: '/api/public/lookup'
+      fullPath: '/api/public/lookup'
+      preLoaderRoute: typeof ApiPublicLookupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -351,6 +371,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   VocabularyRoute: VocabularyRoute,
   WordIdRoute: WordIdRoute,
+  ApiPublicLookupRoute: ApiPublicLookupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
