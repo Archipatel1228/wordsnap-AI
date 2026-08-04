@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>WordSnap AI — Settings</title>
+    <link rel="stylesheet" href="popup.css" />
+    <style>
+      body { width: 420px; }
+      label.row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid rgba(148,163,184,.14); }
+      select { background: rgba(15,23,42,.6); color: inherit; border: 1px solid rgba(148,163,184,.25); border-radius: 10px; padding: 5px 8px; }
+    </style>
+  </head>
+  <body>
+    <header class="head">
+      <img src="icons/icon-192.png" alt="" width="28" height="28" />
+      <div><h1>WordSnap settings</h1><p id="saved-note" style="font-size:11.5px;opacity:.7">Changes save automatically</p></div>
+    </header>
+
+    <label class="row">Show floating icon on selection<input type="checkbox" data-key="floatingIcon" /></label>
+    <label class="row">Double-click a word to look it up<input type="checkbox" data-key="doubleClickLookup" /></label>
+    <label class="row">Enable pronunciation audio<input type="checkbox" data-key="pronunciation" /></label>
+    <label class="row">Confirm before auto-saving<input type="checkbox" data-key="autoSaveConfirm" /></label>
+    <label class="row">Popup theme
+      <select data-key="theme"><option value="dark">Dark</option><option value="light">Light</option></select>
+    </label>
+    <label class="row">Popup size
+      <select data-key="popupSize"><option value="small">Small</option><option value="medium">Medium</option><option value="large">Large</option></select>
+    </label>
+    <label class="row">Explanation level
+      <select data-key="level"><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select>
+    </label>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>
