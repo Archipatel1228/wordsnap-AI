@@ -1,0 +1,10 @@
+/* Host-page stylesheet: the extension UI lives in a shadow root, so we only
+   need to keep the host element itself out of the page layout. */
+#wordsnap-root {
+  all: initial;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+}
