@@ -17,13 +17,13 @@ export const DEFAULT_SETTINGS = {
 };
 
 export async function getSettings() {
-  const stored = await chrome.storage.sync.get("settings");
+  const stored = await chrome.storage.local.get("settings");
   return { ...DEFAULT_SETTINGS, ...(stored.settings || {}) };
 }
 
 export async function setSettings(patch) {
   const next = { ...(await getSettings()), ...patch };
-  await chrome.storage.sync.set({ settings: next });
+  await chrome.storage.local.set({ settings: next });
   return next;
 }
 
@@ -38,14 +38,18 @@ export async function writeSession(session) {
   return chrome.storage.session.set({ session });
 }
 
-async function refresh(session) {
+export async function refreshSession(session) {
   if (!session?.refresh_token) return null;
   const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
     method: "POST",
     headers: { "content-type": "application/json", apikey: SUPABASE_KEY },
     body: JSON.stringify({ refresh_token: session.refresh_token }),
   });
-  if (!res.ok) return null;
+  if (!res.ok) {
+    // Refresh token rejected (revoked/expired): drop the stale session.
+    if (res.status === 400 || res.status === 401) await writeSession(null);
+    return null;
+  }
   const next = await res.json();
   await writeSession(next);
   return next;
@@ -56,7 +60,8 @@ export async function getAccessToken() {
   let session = await readSession();
   if (!session) return null;
   const expires = (session.expires_at || 0) * 1000;
-  if (expires && expires - Date.now() < 60_000) session = await refresh(session);
+  // Refresh well before expiry so long sessions keep saving/streaks working.
+  if (expires && expires - Date.now() < 5 * 60_000) session = await refreshSession(session);
   return session?.access_token || null;
 }
 

@@ -62,12 +62,12 @@ function Login() {
 
       <div className="mt-10">
         <h1 className="text-3xl font-black tracking-tight">Welcome back</h1>
-        <p className="mt-2 text-sm text-white/60">Sign in to keep learning new words daily.</p>
+        <p className="mt-2 text-sm text-ink/60">Sign in to keep learning new words daily.</p>
       </div>
 
       <form onSubmit={go} className="mt-8 space-y-4">
         <div className="relative">
-          <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+          <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/40" />
           <Input
             type="email"
             required
@@ -75,11 +75,11 @@ function Login() {
             placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="h-14 rounded-2xl border-white/10 bg-white/5 pl-11 text-base placeholder:text-white/40"
+            className="h-14 rounded-2xl border-ink/10 bg-ink/5 pl-11 text-base placeholder:text-ink/40"
           />
         </div>
         <div className="relative">
-          <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+          <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/40" />
           <Input
             type="password"
             required
@@ -87,11 +87,11 @@ function Login() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="h-14 rounded-2xl border-white/10 bg-white/5 pl-11 text-base placeholder:text-white/40"
+            className="h-14 rounded-2xl border-ink/10 bg-ink/5 pl-11 text-base placeholder:text-ink/40"
           />
         </div>
         <div className="text-right">
-          <Link to="/forgot-password" className="text-xs text-white/50 hover:text-white/80">Forgot password?</Link>
+          <Link to="/forgot-password" className="text-xs text-ink/50 hover:text-ink/80">Forgot password?</Link>
         </div>
         <Button
           type="submit"
@@ -103,9 +103,9 @@ function Login() {
       </form>
 
       <div className="my-6 flex items-center gap-3">
-        <div className="h-px flex-1 bg-white/10" />
-        <span className="text-xs uppercase tracking-widest text-white/40">or</span>
-        <div className="h-px flex-1 bg-white/10" />
+        <div className="h-px flex-1 bg-ink/10" />
+        <span className="text-xs uppercase tracking-widest text-ink/40">or</span>
+        <div className="h-px flex-1 bg-ink/10" />
       </div>
 
       <div className="space-y-3">
@@ -113,7 +113,7 @@ function Login() {
           onClick={() => social(() => auth.signInWithGoogle())}
           disabled={busy}
           variant="outline"
-          className="h-14 w-full rounded-2xl border-white/10 bg-white/5 text-base hover:bg-white/10"
+          className="h-14 w-full rounded-2xl border-ink/10 bg-ink/5 text-base hover:bg-ink/10"
         >
           <GoogleIcon /> Continue with Google
         </Button>
@@ -126,14 +126,14 @@ function Login() {
           disabled={busy}
 
           variant="ghost"
-          className="h-14 w-full rounded-2xl text-base text-white/70 hover:bg-white/5"
+          className="h-14 w-full rounded-2xl text-base text-ink/70 hover:bg-ink/5"
         >
           Continue as Guest
         </Button>
 
       </div>
 
-      <p className="mt-8 text-center text-sm text-white/60">
+      <p className="mt-8 text-center text-sm text-ink/60">
         Don't have an account?{" "}
         <Link to="/register" className="font-semibold gradient-text">
           Sign up

@@ -22,7 +22,7 @@ export function RecentAndTrending({ onPick }: { onPick: (word: string) => void }
     <div className="mt-7 space-y-7">
       {recent.length > 0 && (
         <section>
-          <h2 className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/50">
+          <h2 className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-ink/50">
             <Clock className="h-3.5 w-3.5" /> Recent searches
           </h2>
           <div className="flex flex-wrap gap-2">
@@ -30,7 +30,7 @@ export function RecentAndTrending({ onPick }: { onPick: (word: string) => void }
               <button
                 key={item.word}
                 onClick={() => onPick(item.word)}
-                className="rounded-full bg-white/8 px-4 py-2 text-sm text-white/85 hover:bg-white/15"
+                className="rounded-full bg-ink/8 px-4 py-2 text-sm text-ink/85 hover:bg-ink/15"
               >
                 {item.word}
               </button>
@@ -40,13 +40,13 @@ export function RecentAndTrending({ onPick }: { onPick: (word: string) => void }
       )}
 
       <section>
-        <h2 className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/50">
+        <h2 className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-ink/50">
           <Flame className="h-3.5 w-3.5 text-orange-400" /> Trending words
         </h2>
         {trending.isPending ? (
           <div className="flex flex-wrap gap-2">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="h-9 w-24 animate-pulse rounded-full bg-white/10" />
+              <div key={i} className="h-9 w-24 animate-pulse rounded-full bg-ink/10" />
             ))}
           </div>
         ) : (
@@ -55,7 +55,7 @@ export function RecentAndTrending({ onPick }: { onPick: (word: string) => void }
               <button
                 key={word}
                 onClick={() => onPick(word)}
-                className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/85 hover:bg-white/12"
+                className="rounded-full border border-ink/10 bg-ink/5 px-4 py-2 text-sm text-ink/85 hover:bg-ink/12"
               >
                 {word}
               </button>

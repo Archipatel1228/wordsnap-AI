@@ -7,7 +7,7 @@ import { pronounce } from "@/lib/speech";
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mt-6">
-      <h3 className="text-xs font-bold uppercase tracking-widest text-white/50">{title}</h3>
+      <h3 className="text-xs font-bold uppercase tracking-widest text-ink/50">{title}</h3>
       <div className="mt-2">{children}</div>
     </section>
   );
@@ -24,7 +24,7 @@ function Chips({ items, tone }: { items: string[]; tone?: "primary" | "accent" }
               ? "rounded-full bg-primary/25 px-3 py-1.5 text-sm"
               : tone === "accent"
                 ? "rounded-full bg-accent/25 px-3 py-1.5 text-sm"
-                : "rounded-full bg-white/10 px-3 py-1.5 text-sm text-white/80"
+                : "rounded-full bg-ink/10 px-3 py-1.5 text-sm text-ink/80"
           }
         >
           {item}
@@ -53,7 +53,7 @@ export function DictionaryResult({ entry }: { entry: DictionaryEntry }) {
             {entry.word}
           </h1>
           {(phonetic || entry.meanings[0]?.partOfSpeech) && (
-            <p className="mt-1 text-sm text-white/55">
+            <p className="mt-1 text-sm text-ink/55">
               {[phonetic, entry.meanings[0]?.partOfSpeech].filter(Boolean).join(" · ")}
             </p>
           )}
@@ -61,7 +61,7 @@ export function DictionaryResult({ entry }: { entry: DictionaryEntry }) {
         <button
           onClick={play}
           aria-label={`Play pronunciation of ${entry.word}`}
-          className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10"
+          className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-ink/10 bg-ink/5 hover:bg-ink/10"
         >
           <Volume2 className="h-5 w-5" />
         </button>
@@ -77,13 +77,13 @@ export function DictionaryResult({ entry }: { entry: DictionaryEntry }) {
         <Section key={`${meaning.partOfSpeech}-${index}`} title={meaning.partOfSpeech || "Meaning"}>
           <ol className="space-y-3">
             {meaning.definitions.slice(0, 6).map((definition, i) => (
-              <li key={i} className="rounded-2xl bg-white/5 px-4 py-3">
-                <p className="text-sm leading-relaxed text-white/90">
-                  <span className="mr-2 text-white/40">{i + 1}.</span>
+              <li key={i} className="rounded-2xl bg-ink/5 px-4 py-3">
+                <p className="text-sm leading-relaxed text-ink/90">
+                  <span className="mr-2 text-ink/40">{i + 1}.</span>
                   {definition.definition}
                 </p>
                 {definition.example && (
-                  <p className="mt-2 text-sm italic text-white/60">“{definition.example}”</p>
+                  <p className="mt-2 text-sm italic text-ink/60">“{definition.example}”</p>
                 )}
               </li>
             ))}
@@ -108,11 +108,11 @@ export function DictionaryResult({ entry }: { entry: DictionaryEntry }) {
       )}
       {entry.origin && (
         <Section title="Origin">
-          <p className="text-sm leading-relaxed text-white/80">{entry.origin}</p>
+          <p className="text-sm leading-relaxed text-ink/80">{entry.origin}</p>
         </Section>
       )}
       {entry.sourceUrls.length > 0 && (
-        <p className="mt-6 text-[11px] text-white/35">
+        <p className="mt-6 text-[11px] text-ink/35">
           Source:{" "}
           <a
             href={entry.sourceUrls[0]}
@@ -131,17 +131,17 @@ export function DictionaryResult({ entry }: { entry: DictionaryEntry }) {
 export function DictionarySkeleton() {
   return (
     <div className="card-premium space-y-4 rounded-3xl p-6" aria-busy="true">
-      <div className="h-10 w-48 animate-pulse rounded-2xl bg-white/10" />
-      <div className="h-3 w-32 animate-pulse rounded-full bg-white/10" />
+      <div className="h-10 w-48 animate-pulse rounded-2xl bg-ink/10" />
+      <div className="h-3 w-32 animate-pulse rounded-full bg-ink/10" />
       <div className="space-y-2 pt-3">
         {[0, 1, 2, 3].map((i) => (
-          <div key={i} className="h-3 w-full animate-pulse rounded-full bg-white/10" />
+          <div key={i} className="h-3 w-full animate-pulse rounded-full bg-ink/10" />
         ))}
       </div>
-      <div className="h-16 animate-pulse rounded-2xl bg-white/5" />
+      <div className="h-16 animate-pulse rounded-2xl bg-ink/5" />
       <div className="flex gap-2">
         {[0, 1, 2].map((i) => (
-          <div key={i} className="h-7 w-20 animate-pulse rounded-full bg-white/10" />
+          <div key={i} className="h-7 w-20 animate-pulse rounded-full bg-ink/10" />
         ))}
       </div>
     </div>

@@ -42,32 +42,32 @@ function ForgotPassword() {
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-[520px] flex-col px-6 py-10">
-      <Link to="/login" aria-label="Back to sign in" className="grid h-11 w-11 place-items-center rounded-2xl border border-white/10 bg-white/5">
+      <Link to="/login" aria-label="Back to sign in" className="grid h-11 w-11 place-items-center rounded-2xl border border-ink/10 bg-ink/5">
         <ArrowLeft className="h-5 w-5" />
       </Link>
       <Wordmark className="mt-8" />
       <h1 className="mt-8 text-3xl font-black tracking-tight">Reset your password</h1>
-      <p className="mt-2 text-sm text-white/60">
+      <p className="mt-2 text-sm text-ink/60">
         Enter your email and we'll send you a secure link to choose a new password.
       </p>
 
 
       {sent ? (
-        <div className="card-premium mt-8 rounded-3xl p-6 text-sm text-white/80">
+        <div className="card-premium mt-8 rounded-3xl p-6 text-sm text-ink/80">
           If an account exists for <span className="font-semibold">{email}</span>, a reset link is on
           its way.
         </div>
       ) : (
         <form onSubmit={submit} className="mt-8 space-y-4">
           <div className="relative">
-            <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+            <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/40" />
             <Input
               type="email"
               required
               placeholder="Email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="h-14 rounded-2xl border-white/10 bg-white/5 pl-11 text-base placeholder:text-white/40"
+              className="h-14 rounded-2xl border-ink/10 bg-ink/5 pl-11 text-base placeholder:text-ink/40"
             />
           </div>
           <Button

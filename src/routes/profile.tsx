@@ -47,19 +47,19 @@ function Profile() {
               {user.name.charAt(0).toUpperCase()}
             </div>
             <h2 className="mt-4 text-xl font-black">{user.name}</h2>
-            <p className="text-sm text-white/50">{user.email}</p>
+            <p className="text-sm text-ink/50">{user.email}</p>
           </div>
         ) : (
           <div className="card-premium rounded-3xl p-6 text-center">
             <h2 className="text-lg font-bold">You're browsing as a guest</h2>
-            <p className="mt-2 text-sm text-white/60">
+            <p className="mt-2 text-sm text-ink/60">
               Sign in to keep your vocabulary, history and streak in sync across devices.
             </p>
             <div className="mt-5 flex gap-2">
               <Button asChild className="h-11 flex-1 rounded-2xl gradient-primary text-sm font-semibold">
                 <Link to="/login">Sign in</Link>
               </Button>
-              <Button asChild variant="outline" className="h-11 flex-1 rounded-2xl border-white/15 bg-white/5 text-sm">
+              <Button asChild variant="outline" className="h-11 flex-1 rounded-2xl border-ink/15 bg-ink/5 text-sm">
                 <Link to="/register">Create account</Link>
               </Button>
             </div>
@@ -105,7 +105,7 @@ function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; va
     <div className="card-premium rounded-2xl p-3 text-center">
       <div className="flex justify-center">{icon}</div>
       <div className="mt-1 text-xl font-black">{value}</div>
-      <div className="text-[10px] uppercase tracking-widest text-white/50">{label}</div>
+      <div className="text-[10px] uppercase tracking-widest text-ink/50">{label}</div>
     </div>
   );
 }
@@ -114,10 +114,10 @@ function MenuItem({ to, label }: { to: string; label: string }) {
   return (
     <Link
       to={to}
-      className="glass flex items-center justify-between rounded-2xl px-4 py-3.5 text-sm font-medium hover:bg-white/10"
+      className="glass flex items-center justify-between rounded-2xl px-4 py-3.5 text-sm font-medium hover:bg-ink/10"
     >
       {label}
-      <ChevronRight className="h-4 w-4 text-white/40" />
+      <ChevronRight className="h-4 w-4 text-ink/40" />
     </Link>
   );
 }

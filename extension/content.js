@@ -19,7 +19,7 @@
     if (res?.settings) settings = { ...settings, ...res.settings };
   });
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === "sync" && changes.settings?.newValue) {
+    if (area === "local" && changes.settings?.newValue) {
       settings = { ...settings, ...changes.settings.newValue };
     }
   });
@@ -36,7 +36,15 @@
     return root;
   }
 
-  const isSingleWord = (t) => /^[A-Za-z][A-Za-z'-]{1,29}$/.test(t);
+  /**
+   * A valid lookup target: exactly one English word (letters, one optional
+   * internal hyphen or apostrophe). Phrases, numbers, code and punctuation-
+   * heavy fragments never show the floating icon.
+   */
+  function isSingleWord(t) {
+    if (!t || t.length > 30 || /\s/.test(t)) return false;
+    return /^[A-Za-z]+(?:['-][A-Za-z]+)?$/.test(t) && t.replace(/[^A-Za-z]/g, "").length >= 2;
+  }
 
   function removeTrigger() {
     trigger?.remove();
@@ -232,6 +240,7 @@
       const info = selectionInfo();
       if (!info) return removeTrigger();
       if (settings.floatingIcon === false) return;
+      currentWord = info.text;
       showTrigger(info.text, info.rect);
     }, 10);
   });
@@ -256,8 +265,31 @@
   });
 
   document.addEventListener("selectionchange", () => {
-    if (!window.getSelection()?.toString().trim()) removeTrigger();
+    const text = window.getSelection()?.toString().trim() || "";
+    // Reselecting, clearing, or growing a selection into a phrase hides the icon.
+    if (!isSingleWord(text) || text !== currentWord) removeTrigger();
   });
+
+  const dismiss = () => {
+    removeTrigger();
+    closePopup();
+  };
+  // Anchors are absolute page coordinates, so any scroll/resize invalidates them.
+  window.addEventListener("scroll", dismiss, { passive: true, capture: true });
+  window.addEventListener("resize", dismiss, { passive: true });
+  window.addEventListener("pagehide", dismiss);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") dismiss();
+  });
+  // SPA route changes (Gmail, LinkedIn, ChatGPT…) must clear stale UI too.
+  window.addEventListener("popstate", dismiss);
+  for (const method of ["pushState", "replaceState"]) {
+    const original = history[method].bind(history);
+    history[method] = (...args) => {
+      dismiss();
+      return original(...args);
+    };
+  }
 
   chrome.runtime.onMessage.addListener((msg) => {
     if (msg?.type === "WORDSNAP_SHOW" && msg.word) {

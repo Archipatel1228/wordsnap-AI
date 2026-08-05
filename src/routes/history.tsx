@@ -62,7 +62,7 @@ function History() {
         {query.isPending ? (
           <div className="mt-4 space-y-2">
             {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="h-14 animate-pulse rounded-2xl bg-white/5" />
+              <div key={i} className="h-14 animate-pulse rounded-2xl bg-ink/5" />
             ))}
           </div>
         ) : items.length === 0 ? (
@@ -81,7 +81,7 @@ function History() {
                   className="flex min-w-0 flex-1 items-center justify-between px-4 py-3.5"
                 >
                   <span className="truncate font-medium">{item.word}</span>
-                  <span className="ml-3 shrink-0 text-xs text-white/40">{relative(item.at)}</span>
+                  <span className="ml-3 shrink-0 text-xs text-ink/40">{relative(item.at)}</span>
                 </Link>
                 <button
                   aria-label={`Remove ${item.word} from history`}
@@ -89,7 +89,7 @@ function History() {
                     await data.removeHistory(item.word);
                     refresh();
                   }}
-                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/10 text-white/60"
+                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-ink/10 text-ink/60"
                 >
                   <X className="h-4 w-4" />
                 </button>

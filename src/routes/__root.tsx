@@ -18,6 +18,7 @@ import { ServicesProvider, usePreferences } from "@/lib/services";
 import { registerServiceWorker } from "@/lib/register-sw";
 import { installDiagnostics } from "@/lib/diagnostics";
 import { supabase } from "@/integrations/supabase/client";
+import { ThemeProvider, themeBootstrapScript, useTheme } from "@/lib/theme";
 
 
 function NotFoundComponent() {
@@ -119,9 +120,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
       </head>
       <body>
         {children}
@@ -154,6 +156,11 @@ function AuthSync({ queryClient }: { queryClient: QueryClient }) {
   return null;
 }
 
+function ThemedToaster() {
+  const { theme } = useTheme();
+  return <Toaster position="top-center" theme={theme} richColors />;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
@@ -164,14 +171,16 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
       <ServicesProvider>
         <AuthSync queryClient={queryClient} />
         <AccessibilityEffects />
         <OfflineBanner />
         <Outlet />
         <InstallPrompt />
-        <Toaster position="top-center" theme="dark" richColors />
+        <ThemedToaster />
       </ServicesProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

@@ -32,7 +32,7 @@ function BottomNav() {
               to={to}
               className={cn(
                 "relative flex flex-1 flex-col items-center gap-1 rounded-2xl px-2 py-2 text-[11px] font-medium transition-all",
-                active ? "text-white" : "text-white/50 hover:text-white/80",
+                active ? "text-white" : "text-ink/50 hover:text-ink/80",
               )}
             >
               {active && (
@@ -61,7 +61,7 @@ export function ScreenHeader({
     <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-5 pt-8 pb-4">
       <div className="min-w-0">
         <h1 className="truncate text-2xl font-black tracking-tight">{title}</h1>
-        {subtitle && <p className="mt-1 truncate text-sm text-white/60">{subtitle}</p>}
+        {subtitle && <p className="mt-1 truncate text-sm text-ink/60">{subtitle}</p>}
       </div>
       {right && <div className="shrink-0">{right}</div>}
     </header>

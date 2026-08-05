@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { BookMarked, Flame, Sparkles } from "lucide-react";
+import { BookMarked, Flame, Sparkles, Wand2 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { SearchBar } from "@/components/SearchBar";
 import { RecentAndTrending } from "@/components/RecentAndTrending";
@@ -51,7 +51,7 @@ function Home() {
           </div>
         </div>
 
-        {user && <p className="mt-5 text-sm text-white/55">Welcome back, {user.name}.</p>}
+        {user && <p className="mt-5 text-sm text-ink/55">Welcome back, {user.name}.</p>}
 
         <SearchBar className="mt-4" />
 
@@ -60,28 +60,28 @@ function Home() {
           className="card-premium animate-float-in relative mt-6 block overflow-hidden rounded-3xl p-5"
         >
           <div className="pointer-events-none absolute -right-8 -top-8 h-40 w-40 rounded-full gradient-primary opacity-30 blur-3xl" />
-          <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-white/60">
+          <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-ink/60">
             <Sparkles className="h-3.5 w-3.5" /> Word of the day
           </div>
           {daily.isPending ? (
             <div className="mt-4 space-y-3">
-              <div className="h-8 w-40 animate-pulse rounded-2xl bg-white/10" />
-              <div className="h-3 w-full animate-pulse rounded-full bg-white/10" />
+              <div className="h-8 w-40 animate-pulse rounded-2xl bg-ink/10" />
+              <div className="h-3 w-full animate-pulse rounded-full bg-ink/10" />
             </div>
           ) : daily.data ? (
             <>
               <h2 className="mt-3 text-3xl font-black gradient-text">{daily.data.word}</h2>
-              <p className="mt-1 text-sm text-white/50">
+              <p className="mt-1 text-sm text-ink/50">
                 {[primaryPhonetic(daily.data), daily.data.meanings[0]?.partOfSpeech]
                   .filter(Boolean)
                   .join(" · ")}
               </p>
-              <p className="mt-3 line-clamp-2 text-sm text-white/80">
+              <p className="mt-3 line-clamp-2 text-sm text-ink/80">
                 {primaryDefinition(daily.data)}
               </p>
             </>
           ) : (
-            <p className="mt-3 text-sm text-white/60">Today's word will appear once you're online.</p>
+            <p className="mt-3 text-sm text-ink/60">Today's word will appear once you're online.</p>
           )}
         </Link>
 
@@ -92,8 +92,16 @@ function Home() {
         </div>
 
         <Link
+          to="/autocorrect"
+          className="glass mt-5 flex items-center gap-3 rounded-2xl px-4 py-3.5 text-sm font-medium hover:bg-ink/10"
+        >
+          <Wand2 className="h-4 w-4" /> AI Autocorrect
+          <span className="ml-auto text-xs text-ink/50">Fix spelling & grammar</span>
+        </Link>
+
+        <Link
           to="/vocabulary"
-          className="glass mt-5 flex items-center gap-3 rounded-2xl px-4 py-3.5 text-sm font-medium hover:bg-white/10"
+          className="glass mt-5 flex items-center gap-3 rounded-2xl px-4 py-3.5 text-sm font-medium hover:bg-ink/10"
         >
           <BookMarked className="h-4 w-4" /> My vocabulary
         </Link>
@@ -108,7 +116,7 @@ function StatCard({ label, value, accent }: { label: string; value: number; acce
   return (
     <div className="card-premium rounded-2xl p-4 text-center">
       <div className={`text-2xl font-black ${accent ? "gradient-text" : ""}`}>{value}</div>
-      <div className="mt-1 text-[11px] uppercase tracking-widest text-white/50">{label}</div>
+      <div className="mt-1 text-[11px] uppercase tracking-widest text-ink/50">{label}</div>
     </div>
   );
 }

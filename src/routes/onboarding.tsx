@@ -39,7 +39,7 @@ function Onboarding() {
   return (
     <div className="flex min-h-screen flex-col px-6 py-10">
       <div className="flex justify-end">
-        <Link to="/login" className="text-sm text-white/50 hover:text-white/80">
+        <Link to="/login" className="text-sm text-ink/50 hover:text-ink/80">
           Skip
         </Link>
       </div>
@@ -50,7 +50,7 @@ function Onboarding() {
             <S.icon className="h-16 w-16 text-white" strokeWidth={2} />
           </div>
           <h2 className="mt-10 text-3xl font-black tracking-tight">{S.title}</h2>
-          <p className="mt-4 max-w-xs text-base text-white/60">{S.body}</p>
+          <p className="mt-4 max-w-xs text-base text-ink/60">{S.body}</p>
         </div>
       </div>
 
@@ -60,7 +60,7 @@ function Onboarding() {
             key={idx}
             onClick={() => setI(idx)}
             className={`h-2 rounded-full transition-all ${
-              idx === i ? "w-8 gradient-primary" : "w-2 bg-white/20"
+              idx === i ? "w-8 gradient-primary" : "w-2 bg-ink/20"
             }`}
           />
         ))}

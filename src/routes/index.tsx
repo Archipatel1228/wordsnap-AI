@@ -39,10 +39,10 @@ function Splash() {
       <h1 className="mt-8 text-4xl font-black tracking-tight">
         Word<span className="gradient-text">Snap</span> AI
       </h1>
-      <p className="mt-3 max-w-xs text-sm text-white/60">Understand anything instantly.</p>
+      <p className="mt-3 max-w-xs text-sm text-ink/60">Understand anything instantly.</p>
       <Link
         to="/home"
-        className="mt-10 text-xs uppercase tracking-[0.3em] text-white/40 hover:text-white/70"
+        className="mt-10 text-xs uppercase tracking-[0.3em] text-ink/40 hover:text-ink/70"
       >
         Enter →
       </Link>

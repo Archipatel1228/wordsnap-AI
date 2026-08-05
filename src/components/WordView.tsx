@@ -132,7 +132,7 @@ export function WordView({ word }: { word: string }) {
           onClick={toggleSave}
           aria-pressed={isSaved}
           className={`flex h-11 items-center gap-2 rounded-2xl border px-4 text-sm font-semibold transition-all ${
-            isSaved ? "border-transparent gradient-primary" : "border-white/10 bg-white/5"
+            isSaved ? "border-transparent gradient-primary" : "border-ink/10 bg-ink/5"
           }`}
         >
           <Bookmark className="h-4 w-4" fill={isSaved ? "currentColor" : "none"} />
@@ -146,13 +146,13 @@ export function WordView({ word }: { word: string }) {
       <div className="mt-5 grid grid-cols-2 gap-3">
         <button
           onClick={copy}
-          className="glass flex items-center justify-center gap-2 rounded-2xl px-4 py-3.5 text-sm font-semibold hover:bg-white/10"
+          className="glass flex items-center justify-center gap-2 rounded-2xl px-4 py-3.5 text-sm font-semibold hover:bg-ink/10"
         >
           <Copy className="h-4 w-4" /> Copy
         </button>
         <button
           onClick={share}
-          className="glass flex items-center justify-center gap-2 rounded-2xl px-4 py-3.5 text-sm font-semibold hover:bg-white/10"
+          className="glass flex items-center justify-center gap-2 rounded-2xl px-4 py-3.5 text-sm font-semibold hover:bg-ink/10"
         >
           <Share2 className="h-4 w-4" /> Share
         </button>
