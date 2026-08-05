@@ -210,8 +210,8 @@ async def main():
                 "new Promise(r => chrome.runtime.sendMessage({type:'SAVE_WORD', payload:{word:'test'}}, r))",
             )
             check(
-                "signed-out save is rejected with NOT_SIGNED_IN",
-                res and res.get("error") == "NOT_SIGNED_IN",
+                "signed-out save is rejected",
+                bool(res) and res.get("ok") is False and "NOT_SIGNED_IN" in str(res.get("error")),
                 "set EXT_TEST_EMAIL/EXT_TEST_PASSWORD to run the save tests",
             )
 
