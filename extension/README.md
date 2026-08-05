@@ -21,6 +21,16 @@ public endpoint (`/api/public/lookup`) and the existing Lovable Cloud database.
 | Toolbar popup | `popup.html/js/css` | Streak, saved count, recent words, manual lookup, dashboard link. |
 | Settings | `options.html/js` | Floating icon, double-click lookup, pronunciation, theme, popup size, explanation level. |
 
+## Privacy notice
+
+- Sent to the backend: **only the selected word** and the explanation level, to
+  `POST /api/public/lookup`. Never the page content, URL, title or surrounding text.
+- Sent to your account database: **words you explicitly save** (word, definition, phonetic,
+  audio URL), plus a `search_history` row and today's date for the streak.
+- Stored on your device only: extension settings (`chrome.storage.local`, not synced).
+- Stored in memory only: your Supabase session (`chrome.storage.session`, wiped on browser exit).
+- No analytics, telemetry, tracking pixels or page scraping.
+
 ## Security
 
 - No AI keys in the extension: explanations come from the server route, which holds
@@ -29,6 +39,11 @@ public endpoint (`/api/public/lookup`) and the existing Lovable Cloud database.
   read/write to the signed-in user.
 - The session is stored in `chrome.storage.session` (in-memory, cleared when the browser
   closes) — never in `localStorage` or `storage.local`.
+- Minimal permissions: `storage`, `contextMenus`, `alarms` only — no `activeTab`, no
+  `scripting`, no `tabs`. Host permissions are narrowed to the lookup endpoint and the
+  Supabase REST/token paths; content scripts run on `https://` pages only.
+- The session refreshes automatically every 30 minutes (and 5 minutes before expiry), so
+  saving and streaks keep working during long sessions; a rejected refresh clears the session.
 - Saves are idempotent (`on_conflict=user_id,word_key`), so duplicates are impossible.
 
 ## Firefox / Brave later
@@ -36,6 +51,16 @@ public endpoint (`/api/public/lookup`) and the existing Lovable Cloud database.
 Brave works as-is. Firefox needs only a `browser_specific_settings` block plus swapping the
 `chrome.*` calls for the `browser.*` promise API — all of which are already funnelled through
 `lib/shared.js` and the message router, so no UI code changes.
+
+## End-to-end tests
+
+```bash
+bun run test:extension   # Playwright, loads the unpacked extension in Chromium
+```
+
+Covers selection lookup, popup rendering, context-menu lookup, save-to-account and
+duplicate-save prevention. Save tests need `EXT_TEST_EMAIL` / `EXT_TEST_PASSWORD`; without
+them they are skipped and the signed-out path is asserted instead.
 
 ## Repackage
 

@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test:privacy": "node scripts/privacy-test.mjs",
-    "test:voice": "python3 scripts/voice-search-test.py"
+    "test:voice": "python3 scripts/voice-search-test.py",
+    "test:extension": "python3 scripts/extension-e2e.py"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

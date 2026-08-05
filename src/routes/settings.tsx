@@ -7,6 +7,8 @@ import {
   Eye,
   HardDriveDownload,
   Languages,
+  Moon,
+  Sun,
   Type,
   Zap,
 } from "lucide-react";
@@ -17,6 +19,7 @@ import { Switch } from "@/components/ui/switch";
 import { usePwaInstall } from "@/hooks/usePwaInstall";
 import { useNotifications } from "@/hooks/useNotifications";
 import { usePreferences, useData } from "@/lib/services";
+import { useTheme } from "@/lib/theme";
 import type { VocabularyBackup } from "@/lib/services/types";
 
 
@@ -47,10 +50,10 @@ function Row({
 }) {
   return (
     <div className="glass flex items-center gap-3 rounded-2xl px-4 py-3.5">
-      <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/8">{icon}</div>
+      <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-ink/8">{icon}</div>
       <div className="min-w-0 flex-1">
         <p className="text-sm font-semibold">{title}</p>
-        {description && <p className="mt-0.5 text-xs text-white/50">{description}</p>}
+        {description && <p className="mt-0.5 text-xs text-ink/50">{description}</p>}
       </div>
       {children}
     </div>
@@ -62,6 +65,7 @@ function SettingsPage() {
   const { permission, sendTest } = useNotifications();
   const { canInstall, installed, platform, promptInstall } = usePwaInstall();
   const data = useData();
+  const { theme, setTheme } = useTheme();
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -106,14 +110,44 @@ function SettingsPage() {
         <Link
           to="/profile"
           aria-label="Back to profile"
-          className="grid h-11 w-11 place-items-center rounded-2xl border border-white/10 bg-white/5"
+          className="grid h-11 w-11 place-items-center rounded-2xl border border-ink/10 bg-ink/5"
         >
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <h1 className="text-xl font-black">Settings</h1>
       </div>
 
-      <h2 className="mb-3 mt-7 text-xs font-bold uppercase tracking-widest text-white/50">
+      <h2 className="mb-3 mt-7 text-xs font-bold uppercase tracking-widest text-ink/50">
+        Appearance
+      </h2>
+      <div className="space-y-2">
+        <Row
+          icon={theme === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+          title="Theme"
+          description={theme === "dark" ? "Dark mode is on." : "Light mode is on."}
+        >
+          <div className="flex items-center gap-1 rounded-xl border border-ink/10 bg-ink/5 p-1">
+            <button
+              type="button"
+              aria-pressed={theme === "light"}
+              onClick={() => setTheme("light")}
+              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${theme === "light" ? "gradient-primary text-white" : "text-ink/60"}`}
+            >
+              Light
+            </button>
+            <button
+              type="button"
+              aria-pressed={theme === "dark"}
+              onClick={() => setTheme("dark")}
+              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${theme === "dark" ? "gradient-primary text-white" : "text-ink/60"}`}
+            >
+              Dark
+            </button>
+          </div>
+        </Row>
+      </div>
+
+      <h2 className="mb-3 mt-7 text-xs font-bold uppercase tracking-widest text-ink/50">
         Accessibility
       </h2>
       <div className="space-y-2">
@@ -146,7 +180,7 @@ function SettingsPage() {
             onChange={(e) =>
               update({ translationLanguage: e.target.value as "hindi" | "gujarati" })
             }
-            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs"
+            className="rounded-xl border border-ink/10 bg-ink/5 px-3 py-2 text-xs"
           >
             <option value="hindi">Hindi</option>
             <option value="gujarati">Gujarati</option>
@@ -154,7 +188,7 @@ function SettingsPage() {
         </Row>
       </div>
 
-      <h2 className="mb-3 mt-7 text-xs font-bold uppercase tracking-widest text-white/50">
+      <h2 className="mb-3 mt-7 text-xs font-bold uppercase tracking-widest text-ink/50">
         Notifications
       </h2>
       <div className="space-y-2">
@@ -180,13 +214,13 @@ function SettingsPage() {
             else toast.info("This browser doesn't support notifications");
           }}
           variant="outline"
-          className="h-12 w-full rounded-2xl border-white/15 bg-white/5 text-sm font-semibold"
+          className="h-12 w-full rounded-2xl border-ink/15 bg-ink/5 text-sm font-semibold"
         >
           Send a test Daily Word alert
         </Button>
       </div>
 
-      <h2 className="mb-3 mt-7 text-xs font-bold uppercase tracking-widest text-white/50">App</h2>
+      <h2 className="mb-3 mt-7 text-xs font-bold uppercase tracking-widest text-ink/50">App</h2>
       <div className="space-y-2">
         <Row
           icon={<Download className="h-4 w-4" />}
@@ -227,14 +261,14 @@ function SettingsPage() {
           <Button
             onClick={exportBackup}
             variant="outline"
-            className="h-12 rounded-2xl border-white/15 bg-white/5 text-sm font-semibold"
+            className="h-12 rounded-2xl border-ink/15 bg-ink/5 text-sm font-semibold"
           >
             Export JSON
           </Button>
           <Button
             onClick={() => fileRef.current?.click()}
             variant="outline"
-            className="h-12 rounded-2xl border-white/15 bg-white/5 text-sm font-semibold"
+            className="h-12 rounded-2xl border-ink/15 bg-ink/5 text-sm font-semibold"
           >
             Import JSON
           </Button>

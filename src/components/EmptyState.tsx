@@ -14,11 +14,11 @@ export function EmptyState({
 }) {
   return (
     <div className="card-premium mt-4 rounded-3xl px-6 py-10 text-center">
-      <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-white/5 text-white/60">
+      <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-ink/5 text-ink/60">
         {icon ?? <Search className="h-6 w-6" />}
       </div>
       <h3 className="mt-4 text-base font-bold">{title}</h3>
-      {description && <p className="mx-auto mt-2 max-w-[34ch] text-sm text-white/55">{description}</p>}
+      {description && <p className="mx-auto mt-2 max-w-[34ch] text-sm text-ink/55">{description}</p>}
       {action && <div className="mt-5 flex justify-center">{action}</div>}
     </div>
   );

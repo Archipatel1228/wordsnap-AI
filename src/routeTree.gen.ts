@@ -22,6 +22,7 @@ import { Route as HistoryRouteImport } from './routes/history'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as FlashcardsRouteImport } from './routes/flashcards'
 import { Route as DailyRouteImport } from './routes/daily'
+import { Route as AutocorrectRouteImport } from './routes/autocorrect'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WordIdRouteImport } from './routes/word.$id'
 import { Route as ApiPublicLookupRouteImport } from './routes/api/public/lookup'
@@ -91,6 +92,11 @@ const DailyRoute = DailyRouteImport.update({
   path: '/daily',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AutocorrectRoute = AutocorrectRouteImport.update({
+  id: '/autocorrect',
+  path: '/autocorrect',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -109,6 +115,7 @@ const ApiPublicLookupRoute = ApiPublicLookupRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/autocorrect': typeof AutocorrectRoute
   '/daily': typeof DailyRoute
   '/flashcards': typeof FlashcardsRoute
   '/forgot-password': typeof ForgotPasswordRoute
@@ -127,6 +134,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/autocorrect': typeof AutocorrectRoute
   '/daily': typeof DailyRoute
   '/flashcards': typeof FlashcardsRoute
   '/forgot-password': typeof ForgotPasswordRoute
@@ -146,6 +154,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/autocorrect': typeof AutocorrectRoute
   '/daily': typeof DailyRoute
   '/flashcards': typeof FlashcardsRoute
   '/forgot-password': typeof ForgotPasswordRoute
@@ -166,6 +175,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/autocorrect'
     | '/daily'
     | '/flashcards'
     | '/forgot-password'
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/autocorrect'
     | '/daily'
     | '/flashcards'
     | '/forgot-password'
@@ -202,6 +213,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/autocorrect'
     | '/daily'
     | '/flashcards'
     | '/forgot-password'
@@ -221,6 +233,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AutocorrectRoute: typeof AutocorrectRoute
   DailyRoute: typeof DailyRoute
   FlashcardsRoute: typeof FlashcardsRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
@@ -331,6 +344,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DailyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/autocorrect': {
+      id: '/autocorrect'
+      path: '/autocorrect'
+      fullPath: '/autocorrect'
+      preLoaderRoute: typeof AutocorrectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -357,6 +377,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AutocorrectRoute: AutocorrectRoute,
   DailyRoute: DailyRoute,
   FlashcardsRoute: FlashcardsRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,

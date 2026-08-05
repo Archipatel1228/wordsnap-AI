@@ -32,7 +32,7 @@ export function Wordmark({
           Word<span className="gradient-text">Snap</span> AI
         </span>
         {tagline && (
-          <p className="text-[11px] tracking-wide text-white/50">Understand anything instantly.</p>
+          <p className="text-[11px] tracking-wide text-ink/50">Understand anything instantly.</p>
         )}
       </div>
     </div>

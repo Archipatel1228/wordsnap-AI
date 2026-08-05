@@ -46,17 +46,17 @@ function Register() {
 
   return (
     <div className="flex min-h-screen flex-col px-6 py-10">
-      <Link to="/login" className="text-sm text-white/60">
+      <Link to="/login" className="text-sm text-ink/60">
         ← Back
       </Link>
       <div className="mt-10">
         <h1 className="text-3xl font-black tracking-tight">Create account</h1>
-        <p className="mt-2 text-sm text-white/60">Start your smart vocabulary journey.</p>
+        <p className="mt-2 text-sm text-ink/60">Start your smart vocabulary journey.</p>
       </div>
 
       <form onSubmit={submit} className="mt-8 space-y-4">
         <div className="relative">
-          <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+          <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/40" />
           <Input
             type="text"
             required
@@ -64,11 +64,11 @@ function Register() {
             placeholder="Full name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="h-14 rounded-2xl border-white/10 bg-white/5 pl-11 text-base placeholder:text-white/40"
+            className="h-14 rounded-2xl border-ink/10 bg-ink/5 pl-11 text-base placeholder:text-ink/40"
           />
         </div>
         <div className="relative">
-          <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+          <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/40" />
           <Input
             type="email"
             required
@@ -76,11 +76,11 @@ function Register() {
             placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="h-14 rounded-2xl border-white/10 bg-white/5 pl-11 text-base placeholder:text-white/40"
+            className="h-14 rounded-2xl border-ink/10 bg-ink/5 pl-11 text-base placeholder:text-ink/40"
           />
         </div>
         <div className="relative">
-          <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+          <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/40" />
           <Input
             type="password"
             required
@@ -89,7 +89,7 @@ function Register() {
             placeholder="Password (min 6 characters)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="h-14 rounded-2xl border-white/10 bg-white/5 pl-11 text-base placeholder:text-white/40"
+            className="h-14 rounded-2xl border-ink/10 bg-ink/5 pl-11 text-base placeholder:text-ink/40"
           />
         </div>
         <Button
@@ -101,7 +101,7 @@ function Register() {
         </Button>
       </form>
 
-      <p className="mt-8 text-center text-sm text-white/60">
+      <p className="mt-8 text-center text-sm text-ink/60">
         Already have an account?{" "}
         <Link to="/login" className="font-semibold gradient-text">
           Sign in

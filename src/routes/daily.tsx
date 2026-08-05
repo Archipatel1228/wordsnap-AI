@@ -48,17 +48,17 @@ function Daily() {
             className="relative block overflow-hidden rounded-[2rem] p-6 shadow-[var(--shadow-glow)]"
             style={{ backgroundImage: "var(--gradient-primary)" }}
           >
-            <div className="pointer-events-none absolute -bottom-10 -right-10 h-52 w-52 rounded-full bg-white/20 blur-3xl" />
-            <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-white/80">
+            <div className="pointer-events-none absolute -bottom-10 -right-10 h-52 w-52 rounded-full bg-ink/20 blur-3xl" />
+            <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-ink/80">
               <Calendar className="h-3.5 w-3.5" /> Today's word
             </div>
             <h2 className="mt-3 text-5xl font-black leading-tight">{query.data.word}</h2>
-            <p className="mt-1 text-sm text-white/80">
+            <p className="mt-1 text-sm text-ink/80">
               {[primaryPhonetic(query.data), query.data.meanings[0]?.partOfSpeech]
                 .filter(Boolean)
                 .join(" · ")}
             </p>
-            <p className="mt-4 text-base leading-relaxed text-white/95">
+            <p className="mt-4 text-base leading-relaxed text-ink/95">
               {primaryDefinition(query.data)}
             </p>
             <div className="mt-5 flex items-center gap-1 text-sm font-semibold">

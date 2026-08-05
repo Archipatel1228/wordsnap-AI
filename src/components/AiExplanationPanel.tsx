@@ -58,7 +58,7 @@ export function AiExplanationPanel({ word, context }: { word: string; context?: 
   if (aiStatus.data && !aiStatus.data.configured) {
     return (
       <Shell>
-        <p className="text-sm text-white/70">
+        <p className="text-sm text-ink/70">
           The AI layer is wired and ready — connect a Gemini or OpenAI key to unlock simple
           explanations, ELI10, Hindi and Gujarati translations, memory tricks, real-life examples
           and usage tips.
@@ -70,7 +70,7 @@ export function AiExplanationPanel({ word, context }: { word: string; context?: 
   if (!explanation && !online) {
     return (
       <Shell>
-        <p className="flex items-center gap-2 text-sm text-white/60">
+        <p className="flex items-center gap-2 text-sm text-ink/60">
           <WifiOff className="h-4 w-4" /> No cached AI explanation for this word yet. Reconnect to
           generate one.
         </p>
@@ -83,7 +83,7 @@ export function AiExplanationPanel({ word, context }: { word: string; context?: 
       <Shell>
         <div className="space-y-3" aria-busy="true">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="h-3 w-full animate-pulse rounded-full bg-white/10" />
+            <div key={i} className="h-3 w-full animate-pulse rounded-full bg-ink/10" />
           ))}
         </div>
       </Shell>
@@ -93,7 +93,7 @@ export function AiExplanationPanel({ word, context }: { word: string; context?: 
   if (query.isError && !explanation) {
     return (
       <Shell>
-        <p className="flex items-start gap-2 text-sm text-white/70">
+        <p className="flex items-start gap-2 text-sm text-ink/70">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-rose-300" />
           {(query.error as Error)?.message ?? "The AI explanation couldn't be generated."}
         </p>
@@ -117,20 +117,20 @@ export function AiExplanationPanel({ word, context }: { word: string; context?: 
           if (typeof value !== "string" || !value.trim()) return null;
           return (
             <div key={key}>
-              <h4 className="text-xs font-bold uppercase tracking-widest text-white/45">{label}</h4>
-              <p className="mt-1.5 text-sm leading-relaxed text-white/85">{value}</p>
+              <h4 className="text-xs font-bold uppercase tracking-widest text-ink/45">{label}</h4>
+              <p className="mt-1.5 text-sm leading-relaxed text-ink/85">{value}</p>
             </div>
           );
         })}
 
         {explanation.realLifeExamples?.length > 0 && (
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-widest text-white/45">
+            <h4 className="text-xs font-bold uppercase tracking-widest text-ink/45">
               Real-life examples
             </h4>
             <div className="mt-2 space-y-2">
               {explanation.realLifeExamples.map((example) => (
-                <p key={example} className="rounded-2xl bg-white/5 px-4 py-3 text-sm italic text-white/75">
+                <p key={example} className="rounded-2xl bg-ink/5 px-4 py-3 text-sm italic text-ink/75">
                   “{example}”
                 </p>
               ))}
@@ -140,10 +140,10 @@ export function AiExplanationPanel({ word, context }: { word: string; context?: 
 
         {explanation.usageTips?.length > 0 && (
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-widest text-white/45">Usage tips</h4>
+            <h4 className="text-xs font-bold uppercase tracking-widest text-ink/45">Usage tips</h4>
             <ul className="mt-2 space-y-1.5">
               {explanation.usageTips.map((tip) => (
-                <li key={tip} className="flex gap-2 text-sm text-white/80">
+                <li key={tip} className="flex gap-2 text-sm text-ink/80">
                   <span className="text-accent">•</span>
                   {tip}
                 </li>
@@ -163,8 +163,8 @@ function Shell({ children, offline }: { children: React.ReactNode; offline?: boo
         <div className="grid h-8 w-8 place-items-center rounded-xl gradient-primary">
           <Sparkles className="h-4 w-4" />
         </div>
-        <h2 className="text-sm font-bold uppercase tracking-widest text-white/60">AI explanation</h2>
-        {offline && <span className="ml-auto text-[10px] uppercase text-white/40">cached</span>}
+        <h2 className="text-sm font-bold uppercase tracking-widest text-ink/60">AI explanation</h2>
+        {offline && <span className="ml-auto text-[10px] uppercase text-ink/40">cached</span>}
       </div>
       <div className="mt-4">{children}</div>
     </section>

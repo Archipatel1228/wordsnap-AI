@@ -1,5 +1,6 @@
 import {
   APP_URL,
+  getAccessToken,
   getSettings,
   getUser,
   readSession,
@@ -23,6 +24,17 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
+/** Keep the Supabase session fresh even while the popup is closed. */
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.alarms.create("wordsnap-session-refresh", { periodInMinutes: 30 });
+});
+chrome.runtime.onStartup?.addListener(() => {
+  chrome.alarms.create("wordsnap-session-refresh", { periodInMinutes: 30 });
+});
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === "wordsnap-session-refresh") void getAccessToken();
+});
+
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId !== "wordsnap-explain" || !tab?.id) return;
   chrome.tabs.sendMessage(tab.id, {
@@ -30,6 +42,16 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     word: (info.selectionText || "").trim(),
   });
 });
+
+/** "words" -> "word", "boxes" -> "box": used only as a retry when a lookup misses. */
+function singularise(word) {
+  const w = word.toLowerCase();
+  if (/(ss|us|is)$/.test(w)) return null;
+  if (/ies$/.test(w)) return `${w.slice(0, -3)}y`;
+  if (/(ches|shes|xes|zes|ses)$/.test(w)) return w.slice(0, -2);
+  if (/s$/.test(w)) return w.slice(0, -1);
+  return null;
+}
 
 async function lookup(word, level) {
   const key = `${word.toLowerCase()}::${level}`;
@@ -41,7 +63,11 @@ async function lookup(word, level) {
     body: JSON.stringify({ word, level }),
   });
   const data = await res.json();
-  if (!res.ok) throw new Error(data?.error || "Lookup failed");
+  if (!res.ok) {
+    const singular = singularise(word);
+    if (singular && singular !== word) return lookup(singular, level);
+    throw new Error(data?.error || "Lookup failed");
+  }
   cache.set(key, { at: Date.now(), data });
   if (cache.size > 200) cache.delete(cache.keys().next().value);
   return data;

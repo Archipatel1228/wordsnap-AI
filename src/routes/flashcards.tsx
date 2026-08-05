@@ -11,7 +11,7 @@ import { useData } from "@/lib/services";
 const GRADES: Array<{ grade: ReviewGrade; label: string; className: string }> = [
   { grade: "again", label: "Again", className: "bg-rose-500/20 text-rose-200" },
   { grade: "hard", label: "Hard", className: "bg-amber-500/20 text-amber-200" },
-  { grade: "good", label: "Good", className: "bg-white/10" },
+  { grade: "good", label: "Good", className: "bg-ink/10" },
   { grade: "easy", label: "Easy", className: "bg-emerald-500/20 text-emerald-200" },
 ];
 
@@ -56,20 +56,20 @@ function Flashcards() {
         <Link
           to="/vocabulary"
           aria-label="Back to vocabulary"
-          className="grid h-11 w-11 place-items-center rounded-2xl border border-white/10 bg-white/5"
+          className="grid h-11 w-11 place-items-center rounded-2xl border border-ink/10 bg-ink/5"
         >
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div>
           <h1 className="text-xl font-black">Revision</h1>
-          <p className="text-xs text-white/50">
+          <p className="text-xs text-ink/50">
             {deck.length ? `${Math.min(index + 1, deck.length)} of ${deck.length}` : "Nothing to review"}
           </p>
         </div>
       </div>
 
       {query.isPending ? (
-        <div className="mt-8 h-64 animate-pulse rounded-3xl bg-white/5" />
+        <div className="mt-8 h-64 animate-pulse rounded-3xl bg-ink/5" />
       ) : !deck.length ? (
         <EmptyState
           icon={<Layers className="h-6 w-6" />}
@@ -107,15 +107,15 @@ function Flashcards() {
             className="card-premium mt-8 flex min-h-64 w-full flex-col items-center justify-center gap-3 rounded-[2rem] p-8 text-center"
           >
             <span className="text-3xl font-black gradient-text">{card.word}</span>
-            {card.phonetic && <span className="text-sm text-white/50">{card.phonetic}</span>}
+            {card.phonetic && <span className="text-sm text-ink/50">{card.phonetic}</span>}
             {revealed ? (
-              <p className="mt-3 text-sm leading-relaxed text-white/85">{card.definition}</p>
+              <p className="mt-3 text-sm leading-relaxed text-ink/85">{card.definition}</p>
             ) : (
-              <span className="mt-3 text-xs uppercase tracking-widest text-white/40">
+              <span className="mt-3 text-xs uppercase tracking-widest text-ink/40">
                 Tap to reveal
               </span>
             )}
-            <span className="mt-2 text-[11px] text-white/35">{formatDue(card.srs)}</span>
+            <span className="mt-2 text-[11px] text-ink/35">{formatDue(card.srs)}</span>
           </button>
 
           <div className="mt-4 flex justify-center">

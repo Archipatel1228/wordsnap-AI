@@ -41,7 +41,7 @@ function SearchPage() {
         <Link
           to="/home"
           aria-label="Back to home"
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/5"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-ink/10 bg-ink/5"
         >
           <ArrowLeft className="h-5 w-5" />
         </Link>

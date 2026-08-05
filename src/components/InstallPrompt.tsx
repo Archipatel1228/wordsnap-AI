@@ -25,14 +25,14 @@ export function InstallPrompt() {
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-sm font-bold">Add WordSnap to your home screen</p>
-            <p className="mt-1 text-xs text-white/60">
+            <p className="mt-1 text-xs text-ink/60">
               Launch instantly, full screen, and works offline.
             </p>
           </div>
           <button
             aria-label="Dismiss install prompt"
             onClick={dismiss}
-            className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/10 text-white/70"
+            className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-ink/10 text-ink/70"
           >
             <X className="h-4 w-4" />
           </button>
@@ -48,7 +48,7 @@ export function InstallPrompt() {
         </div>
 
         {(showHelp || !canInstall) && (
-          <div className="mt-3 rounded-2xl bg-white/5 p-3 text-xs leading-relaxed text-white/70">
+          <div className="mt-3 rounded-2xl bg-ink/5 p-3 text-xs leading-relaxed text-ink/70">
             {platform === "ios" ? (
               <span className="inline-flex flex-wrap items-center gap-1">
                 Tap <Share className="inline h-3.5 w-3.5" /> Share in Safari, then

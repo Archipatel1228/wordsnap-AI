@@ -55,7 +55,7 @@ function SearchBarInner({ initialValue = "", autoFocus = false, className }: Sea
         <label htmlFor="wordsnap-search" className="sr-only">
           Search any English word
         </label>
-        <Search className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-white/45" />
+        <Search className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-ink/45" />
         <input
           id="wordsnap-search"
           value={value}
@@ -68,14 +68,14 @@ function SearchBarInner({ initialValue = "", autoFocus = false, className }: Sea
           onFocus={() => setOpen(true)}
           onBlur={() => setTimeout(() => setOpen(false), 150)}
           placeholder="Search any English word…"
-          className="h-16 w-full rounded-3xl border border-white/10 bg-white/5 pl-14 pr-24 text-base outline-none transition-colors placeholder:text-white/40 focus:border-primary/60 focus:bg-white/10"
+          className="h-16 w-full rounded-3xl border border-ink/10 bg-ink/5 pl-14 pr-24 text-base outline-none transition-colors placeholder:text-ink/40 focus:border-primary/60 focus:bg-ink/10"
         />
         {value && (
           <button
             type="button"
             aria-label="Clear search"
             onClick={() => setValue("")}
-            className="absolute right-16 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white/70"
+            className="absolute right-16 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-ink/10 text-ink/70"
           >
             <X className="h-4 w-4" />
           </button>
@@ -98,9 +98,9 @@ function SearchBarInner({ initialValue = "", autoFocus = false, className }: Sea
                 type="button"
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => go(s.word)}
-                className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm hover:bg-white/10"
+                className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm hover:bg-ink/10"
               >
-                <Search className="h-3.5 w-3.5 text-white/40" />
+                <Search className="h-3.5 w-3.5 text-ink/40" />
                 <span className="truncate">{s.word}</span>
               </button>
             </li>
@@ -119,13 +119,13 @@ function SearchBarFallback({ className }: { className?: string }) {
         <label htmlFor="wordsnap-search-fallback" className="sr-only">
           Search any English word
         </label>
-        <Search className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-white/45" />
+        <Search className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-ink/45" />
         <input
           id="wordsnap-search-fallback"
           name="q"
           autoComplete="off"
           placeholder="Search any English word…"
-          className="h-16 w-full rounded-3xl border border-white/10 bg-white/5 pl-14 pr-24 text-base outline-none placeholder:text-white/40 focus:border-primary/60 focus:bg-white/10"
+          className="h-16 w-full rounded-3xl border border-ink/10 bg-ink/5 pl-14 pr-24 text-base outline-none placeholder:text-ink/40 focus:border-primary/60 focus:bg-ink/10"
         />
       </form>
     </div>

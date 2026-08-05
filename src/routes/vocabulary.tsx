@@ -74,7 +74,7 @@ function Vocabulary() {
         {data.isLocalOnly && <LocalOnlyNotice label="Saved vocabulary" />}
 
         <div className="relative mt-4">
-          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/40" />
           <label htmlFor="vocab-filter" className="sr-only">
             Search saved words
           </label>
@@ -83,7 +83,7 @@ function Vocabulary() {
             value={term}
             onChange={(e) => setTerm(e.target.value)}
             placeholder="Search saved words"
-            className="h-12 w-full rounded-2xl border border-white/10 bg-white/5 pl-11 pr-4 text-sm outline-none placeholder:text-white/40"
+            className="h-12 w-full rounded-2xl border border-ink/10 bg-ink/5 pl-11 pr-4 text-sm outline-none placeholder:text-ink/40"
           />
         </div>
 
@@ -93,7 +93,7 @@ function Vocabulary() {
               key={option}
               onClick={() => setSort(option)}
               className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
-                sort === option ? "gradient-primary" : "bg-white/5 text-white/60 hover:bg-white/10"
+                sort === option ? "gradient-primary" : "bg-ink/5 text-ink/60 hover:bg-ink/10"
               }`}
             >
               {option === "recent" ? "Newest" : option === "alpha" ? "A–Z" : "Due first"}
@@ -103,7 +103,7 @@ function Vocabulary() {
             onClick={() => setFavouritesOnly((v) => !v)}
             aria-pressed={favouritesOnly}
             className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
-              favouritesOnly ? "bg-accent" : "bg-white/5 text-white/60 hover:bg-white/10"
+              favouritesOnly ? "bg-accent" : "bg-ink/5 text-ink/60 hover:bg-ink/10"
             }`}
           >
             Favourites
@@ -113,7 +113,7 @@ function Vocabulary() {
         {query.isPending ? (
           <div className="mt-4 space-y-2">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="h-20 animate-pulse rounded-2xl bg-white/5" />
+              <div key={i} className="h-20 animate-pulse rounded-2xl bg-ink/5" />
             ))}
           </div>
         ) : words.length === 0 ? (
@@ -144,13 +144,13 @@ function Vocabulary() {
                     <div className="flex items-center gap-2">
                       <span className="truncate font-bold">{word.word}</span>
                       {word.partOfSpeech && (
-                        <span className="shrink-0 rounded-full bg-white/10 px-2 py-0.5 text-[10px] uppercase tracking-wider text-white/60">
+                        <span className="shrink-0 rounded-full bg-ink/10 px-2 py-0.5 text-[10px] uppercase tracking-wider text-ink/60">
                           {word.partOfSpeech}
                         </span>
                       )}
                     </div>
-                    <p className="mt-1 line-clamp-2 text-xs text-white/55">{word.definition}</p>
-                    <p className="mt-1 text-[11px] text-white/35">{formatDue(word.srs)}</p>
+                    <p className="mt-1 line-clamp-2 text-xs text-ink/55">{word.definition}</p>
+                    <p className="mt-1 text-[11px] text-ink/35">{formatDue(word.srs)}</p>
                   </Link>
                   <div className="flex shrink-0 gap-1">
                     <button
@@ -159,10 +159,10 @@ function Vocabulary() {
                         await data.toggleFavourite(word.word);
                         refresh();
                       }}
-                      className="grid h-9 w-9 place-items-center rounded-xl bg-white/8"
+                      className="grid h-9 w-9 place-items-center rounded-xl bg-ink/8"
                     >
                       <Heart
-                        className={`h-4 w-4 ${word.favourite ? "text-accent" : "text-white/50"}`}
+                        className={`h-4 w-4 ${word.favourite ? "text-accent" : "text-ink/50"}`}
                         fill={word.favourite ? "currentColor" : "none"}
                       />
                     </button>
@@ -172,7 +172,7 @@ function Vocabulary() {
                         await data.removeSavedWord(word.word);
                         refresh();
                       }}
-                      className="grid h-9 w-9 place-items-center rounded-xl bg-white/8 text-white/50"
+                      className="grid h-9 w-9 place-items-center rounded-xl bg-ink/8 text-ink/50"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>

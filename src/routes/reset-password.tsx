@@ -50,7 +50,7 @@ function ResetPassword() {
     <div className="flex min-h-screen flex-col px-6 py-10">
       <div className="mt-16">
         <h1 className="text-3xl font-black tracking-tight">Set a new password</h1>
-        <p className="mt-2 text-sm text-white/60">
+        <p className="mt-2 text-sm text-ink/60">
           {ready
             ? "Choose a password of at least 6 characters."
             : "Open this page from the reset link in your email."}
@@ -59,7 +59,7 @@ function ResetPassword() {
 
       <form onSubmit={submit} className="mt-8 space-y-4">
         <div className="relative">
-          <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+          <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/40" />
           <Input
             type="password"
             required
@@ -68,7 +68,7 @@ function ResetPassword() {
             placeholder="New password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="h-14 rounded-2xl border-white/10 bg-white/5 pl-11 text-base placeholder:text-white/40"
+            className="h-14 rounded-2xl border-ink/10 bg-ink/5 pl-11 text-base placeholder:text-ink/40"
           />
         </div>
         <Button
