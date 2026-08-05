@@ -84,6 +84,11 @@ async def main():
             ],
         )
 
+        # Give the worker a chance to spin up (it registers lazily).
+        boot = await context.new_page()
+        await boot.goto("about:blank")
+        await boot.wait_for_timeout(1500)
+
         worker = None
         for _ in range(40):
             if context.service_workers:
@@ -99,7 +104,7 @@ async def main():
             await context.close()
             return report()
 
-        page = await context.new_page()
+        page = boot
         await page.route("https://example.test/**", lambda route: route.fulfill(content_type="text/html", body=PAGE))
         await page.goto("https://example.test/article")
         await page.wait_for_timeout(500)
