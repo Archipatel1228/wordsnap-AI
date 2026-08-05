@@ -76,9 +76,10 @@ async def main():
         user_dir = tempfile.mkdtemp(prefix="wordsnap-ext-")
         context = await pw.chromium.launch_persistent_context(
             user_dir,
-            headless=True,
+            headless=False,  # extensions need the new headless mode, not the old one
             viewport={"width": 1280, "height": 900},
             args=[
+                "--headless=new",
                 f"--disable-extensions-except={EXT}",
                 f"--load-extension={EXT}",
             ],
