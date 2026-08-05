@@ -7,7 +7,7 @@ export const THEME_STORAGE_KEY = "wordsnap-theme";
 /** Runs before hydration so the first paint already has the right theme. */
 export const themeBootstrapScript = `(function(){try{var t=localStorage.getItem(${JSON.stringify(
   THEME_STORAGE_KEY,
-)});if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";}var r=document.documentElement;r.classList.toggle("dark",t==="dark");r.style.colorScheme=t;}catch(e){}})();`;
+)});if(t!=="light"&&t!=="dark"){t="dark";}var r=document.documentElement;r.classList.toggle("dark",t==="dark");r.style.colorScheme=t;}catch(e){}})();`;
 
 type ThemeContextValue = {
   theme: Theme;
@@ -29,7 +29,7 @@ function readStoredTheme(): Theme {
   try {
     const stored = localStorage.getItem(THEME_STORAGE_KEY);
     if (stored === "light" || stored === "dark") return stored;
-    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+    return "dark"; // WordSnap ships dark-first
   } catch {
     return "dark";
   }
