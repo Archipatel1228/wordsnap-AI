@@ -161,7 +161,18 @@ async def main():
             await page.wait_for_timeout(500)
         check("context-menu lookup opens a popup", "eloquent" in (await popup_text(page)).lower())
 
-        # 6. Saving.
+        # 6. Saving. chrome.runtime.sendMessage from the worker itself is not
+        #    delivered to its own listener, so drive it from the extension popup page.
+        ext_id = worker.url.split("/")[2]
+        ext_page = await context.new_page()
+        await ext_page.goto(f"chrome-extension://{ext_id}/popup.html")
+        await ext_page.wait_for_timeout(300)
+
+        async def msg(payload_js):
+            return await ext_page.evaluate(
+                f"new Promise(r => chrome.runtime.sendMessage({payload_js}, r))"
+            )
+
         if email and password:
             res = await page.request.post(
                 f"{SUPABASE_URL}/auth/v1/token?grant_type=password",
@@ -176,10 +187,7 @@ async def main():
             )
             word = "serendipity"
             payload = json.dumps({"word": word, "definition": "e2e test", "favourite": False})
-            first = await sw_eval(
-                worker,
-                f"new Promise(r => chrome.runtime.sendMessage({{type:'SAVE_WORD', payload:{payload}}}, r))",
-            )
+            first = await msg(f"{{type:'SAVE_WORD', payload:{payload}}}")
             check("saving a word succeeds", bool(first and first.get("ok")), str(first)[:120])
 
             def count_expr():
@@ -189,27 +197,18 @@ async def main():
                 )
 
             after_first = await sw_eval(worker, f"(async () => {count_expr()})()")
-            await sw_eval(
-                worker,
-                f"new Promise(r => chrome.runtime.sendMessage({{type:'SAVE_WORD', payload:{payload}}}, r))",
-            )
+            await msg(f"{{type:'SAVE_WORD', payload:{payload}}}")
             after_second = await sw_eval(worker, f"(async () => {count_expr()})()")
             check(
                 "duplicate save does not create a second row",
                 after_first == after_second == 1,
                 f"{after_first} then {after_second}",
             )
-            stats = await sw_eval(
-                worker, "new Promise(r => chrome.runtime.sendMessage({type:'STATS'}, r))"
-            )
+            stats = await msg("{type:'STATS'}")
             check("streak/stat sync after save", bool(stats and stats["data"]["signedIn"]))
         else:
             await sw_eval(worker, "chrome.storage.session.remove('session')")
-            res = await sw_eval(
-                worker,
-                "new Promise(r => chrome.runtime.sendMessage({type:'SAVE_WORD', payload:{word:'test'}}, r))",
-            )
-            print("   signed-out save response:", res)
+            res = await msg("{type:'SAVE_WORD', payload:{word:'test'}}")
             check(
                 "signed-out save is rejected",
                 bool(res) and res.get("ok") is False and "NOT_SIGNED_IN" in str(res.get("error")),
