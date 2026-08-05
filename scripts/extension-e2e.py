@@ -209,6 +209,7 @@ async def main():
                 worker,
                 "new Promise(r => chrome.runtime.sendMessage({type:'SAVE_WORD', payload:{word:'test'}}, r))",
             )
+            print("   signed-out save response:", res)
             check(
                 "signed-out save is rejected",
                 bool(res) and res.get("ok") is False and "NOT_SIGNED_IN" in str(res.get("error")),
